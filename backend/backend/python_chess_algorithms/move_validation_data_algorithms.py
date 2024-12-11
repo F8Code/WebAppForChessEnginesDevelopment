@@ -71,7 +71,7 @@ def retrieve_coordinate_notation_information(move_info, coordinate_notation_move
             move_info.promoted_to = ChessPiece.Knight
         else:
             raise ValueError("Invalid promotion piece in coordinate notation.")
-    elif move_info.piece_type is ChessPiece.Pawn and (move_info.target_y is 0 or move_info.target_y is 7):
+    elif move_info.piece_type is ChessPiece.Pawn and (move_info.target_y == 0 or move_info.target_y == 7):
         move_info.promoted_to = ChessPiece.Queen
 
 def retrieve_additional_move_information(move_info):

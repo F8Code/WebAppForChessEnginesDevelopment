@@ -1,0 +1,65 @@
+INSTALLATION
+
+1. Github project
+	1.1 Download the GitHub project, either as a .zip file or using the git clone command.
+	1.2 If you downloaded it as a .zip file, unzip the project before proceeding.
+
+2. Docker setup
+	2.1 Download and install the Docker Desktop app from this link: https://www.docker.com/products/docker-desktop/
+	2.2 After the installation, open the Docker Desktop app.
+	2.3 With Docker Desktop running, open the Windows Command Prompt and navigate to the project's folder.
+	2.4 In the project folder, run the command: docker-compose up
+	2.5 If everything worked correctly, you should see the project's containers up and running in the Docker Desktop app.
+
+3. Database setup
+	# Note: Due to Django's limitations with composite keys, setting up the database requires a combination of SQL scripts and Django migration commands.
+	3.1 pgAdmin setup
+		3.1.1 Open your browser and go to pgAdmin located at: http://localhost:8001
+		3.1.2 In pgAdmin, click on the "Add New Server" button.
+		3.1.3 In the General tab, enter any name you prefer.
+		3.1.4 In the Connection tab, use the following settings:
+			Host name: postgres_db
+			Port: 5432
+			Maintenance database: postgres
+			Username: admin
+			Password: password
+			# Note: If prompted for the server's password, also use: password
+		3.1.5 Click Save. On the left panel, navigate to: Servers → (Your server name) → Databases → chess_db → Schemas → Tables.
+		3.1.6 Right-click on the "Tables" folder and open the "Query Tool."
+		3.1.7 Copy the CREATE.sql script from (project-folder)/database into the Query Tool. DO NOT RUN IT YET!
+	3.2 Django Command Setup
+		3.2.1 Open the Django container's bash shell by running: docker exec -it django_backend bash
+		# Note: Ensure the project is running; otherwise, this command will not work.
+	3.3 Create the Database
+		3.3.1 In the Django bash shell, run: 'python manage.py makemigrations' followed by 'python manage.py migrate auth'
+		3.3.2 In pgAdmin's Query Tool, run the CREATE.sql script by pressing F5 or using the "Run" icon in the toolbar.
+		3.3.3 Back in the Django bash shell, run: python manage.py migrate --fake
+		3.3.4 If everything went well, refresh pgAdmin. You should now see all the database tables in place.
+
+
+USAGE
+
+1. Website Access
+	The website is accessible at: http://localhost:4200/
+
+2. Chess Engine Download
+	You can download an exemplary chess engine for use on the website from the following link: https://github.com/F8Code/DjangoChessEngineServerExample
+
+	Important Note:
+	For the chess engine to successfully complete the activation tests on the website, at least one game between human players must be played first.
+	The activation tests retrieve three random moves from the database to validate the engine's responses.
+	If no games have been played, the database will not contain any moves, and the activation tests will fail.
+
+3. Project Services and Ports
+	Additional project areas are accessible at the following URLs:
+	3.1 Django: http://localhost:8000/
+	3.2 Redis: http://localhost:6379/
+	3.3 PostgreSQL: http://localhost:5432/
+	3.4 pgAdmin: http://localhost:8001/
+
+
+UNINSTALL
+
+To remove the project entirely from your pc run this command in cmd in the project's folder: docker-compose down -v
+		
+	

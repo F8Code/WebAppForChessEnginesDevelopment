@@ -105,7 +105,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'chess_db',
-        'USER': 'postgres',
+        'USER': 'admin',
         'PASSWORD': 'password',
         'HOST': 'postgres_db',
         'PORT': 5432,

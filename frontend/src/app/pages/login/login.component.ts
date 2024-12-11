@@ -41,8 +41,7 @@ export class LoginComponent {
     if (this.isRegistering) {
       this.authService.register(this.registerForm.value).subscribe({
         next: (response) => {
-          console.log('Registration successful', response);
-          this.router.navigate(['/login']);
+          this.toggleRegister();
         },
         error: (error) => {
           console.log('Registration failed', error);
@@ -52,7 +51,6 @@ export class LoginComponent {
     } else {
       this.authService.login(this.loginForm.value).subscribe({
         next: (response: any) => {
-          console.log('Login successful', response);
           this.authService.saveToken(response.access);
           this.router.navigate(['/home']);
         },

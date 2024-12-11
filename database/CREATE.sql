@@ -33,7 +33,7 @@ CREATE TABLE Games (
     format_data JSONB DEFAULT '{"player_mode": "Human-Human", "chess_variant": "Standard", "time_format": "10+15"}',
     restrictions_data JSONB,
     description VARCHAR(500),
-    chat VARCHAR(10000)
+    chat VARCHAR(10000),
     result VARCHAR(50)
 );
 
@@ -59,7 +59,7 @@ CREATE TABLE Tournaments (
     restrictions_data JSONB,
     description varchar(2500),
     chat VARCHAR(10000),
-    result VARCHAR(250)
+    winner_name VARCHAR(30)
 );
 
 CREATE TABLE TournamentGames (
