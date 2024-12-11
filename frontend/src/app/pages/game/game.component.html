@@ -1,0 +1,89 @@
+<div class="game-container">
+  <div class="left-panel">
+    <div class="chat-container">
+      <app-chat 
+        [isGame]="true"
+        [myUsername]="playerInfo?.username"
+        (messageSent)="handleChatMessage($event)">
+      </app-chat>
+    </div>
+  </div>
+
+  <div class="board-container">
+    <div class="opponent-row">
+      <div class="player-info">
+        <img *ngIf="opponentInfo?.nationality" 
+             src="assets/flags/{{ opponentInfo.nationality }}.svg" 
+             alt="Flaga kraju" 
+             class="flag-icon" />
+        {{ opponentInfo?.username || 'Anonim' }}
+        <span *ngIf="opponentInfo?.engine">({{ opponentInfo.engine.name }})</span>
+        [{{ opponentInfo?.engine ? opponentInfo.engine.elo : opponentInfo?.elo || 0 }}
+        <span *ngIf="isRankedGame() && hasEloChange(gameDetails?.result, playingAsWhite, false)" 
+              [ngStyle]="getEloChangeStyle(gameDetails?.result, playingAsWhite, false)">
+          {{ getEloChange(gameDetails?.result, playingAsWhite, false) }}
+        </span>]
+      </div>
+      <div class="player-clock">{{ playingAsWhite ? formatTime(blackTime) : formatTime(whiteTime) }}</div>
+    </div>
+
+    <div class="chess-board">
+      <app-chess-board 
+        [isGameLoaded]="isGameLoaded"
+        [isGameActive]="isGameActive"
+        [isSpectator]="isSpectator"
+        [isPlayerTurn]="isPlayerTurn"
+        [playingAsWhite]="playingAsWhite"
+        [playingAsEngine]="playingAsEngine"
+        [isLookingAtLastMove]="isLookingAtLastMove"
+        [currentMove]="currentMove" 
+        [invalidMoveButton]="invalidMoveButton"
+        (playerMove)="onPlayerMove($event)">
+      </app-chess-board>
+    </div>
+
+    <div class="player-row">
+      <div class="player-info">
+        <img *ngIf="playerInfo?.nationality" 
+             src="assets/flags/{{ playerInfo.nationality }}.svg" 
+             alt="Flaga kraju" 
+             class="flag-icon" />
+        {{ playerInfo?.username || 'Ty' }}
+        <span *ngIf="playerInfo?.engine">({{ playerInfo.engine.name }})</span>
+        [{{ playerInfo?.engine ? playerInfo.engine.elo : playerInfo?.elo || 0 }}
+        <span *ngIf="isRankedGame() && hasEloChange(gameDetails?.result, playingAsWhite, true)" 
+              [ngStyle]="getEloChangeStyle(gameDetails?.result, playingAsWhite, true)">
+          {{ getEloChange(gameDetails?.result, playingAsWhite, true) }}
+        </span>]
+      </div>
+      <div class="player-clock">{{ playingAsWhite ? formatTime(whiteTime) : formatTime(blackTime) }}</div>
+    </div>
+  </div>    
+
+  <div class="right-panel">
+    <div class="move-list-container">
+      <app-move-list
+        [moves]="moves"
+        [currentMoveIndex]="currentMoveIndex"
+        (moveSelected)="goToMove($event)">
+      </app-move-list>
+    </div>
+    <div class="actions-container">
+      <app-game-actions
+        [isGameActive]="isGameActive"
+        [isSpectator]="isSpectator"
+        (resign)="handleResignButton()"
+        (offerDraw)="handleOfferDrawButton()"
+        (acceptDraw)="handleAcceptDrawButton()"
+        (offerUndo)="handleOfferUndoButton()"
+        (acceptUndo)="handleAcceptUndoButton()">
+      </app-game-actions>
+    </div>
+  </div>  
+  
+  <div class="exit-button-container">
+    <button (click)="exitGame()">Wyjdź z gry</button>
+  </div>
+</div>
+
+

@@ -1,0 +1,26 @@
+<div class="chess-board">
+  <div *ngFor="let row of rows; let i = index">
+    <div *ngFor="let col of columns; let j = index" 
+        [ngClass]="{
+          black: (i + j) % 2 === 1,
+          white: (i + j) % 2 === 0,
+          'valid-move': isHighlighted(i, j, 'valid'),
+          'invalid-move': isHighlighted(i, j, 'invalid')
+        }"
+        class="square"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event, i, j)">
+        <img *ngIf="isGameLoaded && board[playingAsWhite ? i : 7 - i][playingAsWhite ? j : 7 - j]" 
+          [src]="getPieceImage(board[playingAsWhite ? i : 7 - i][playingAsWhite ? j : 7 - j])" 
+          [attr.draggable]="true"
+          (dragstart)="onDragStart($event, i, j)"
+          class="chess-piece" />
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isPromotionVisible" class="promotion-popup">
+  <button *ngFor="let piece of ['queen', 'rook', 'bishop', 'knight']" (click)="promotePiece(piece)">
+    <img [src]="'/assets/icons/chess-pieces/' + promotionColor + '-' + piece + '.svg'" alt="Promotion piece">
+  </button>
+</div>

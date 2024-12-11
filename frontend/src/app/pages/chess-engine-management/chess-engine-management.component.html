@@ -1,0 +1,13 @@
+<div class="chess-engine-management">
+  <button (click)="addEngine()" class="add-engine-button">Dodaj nowy silnik</button>
+
+  <div class="engines-list">
+    <ng-container *ngFor="let engine of engines; let i = index">
+      <app-engine-controls
+        [engine]="engine"
+        (removeEngine)="removeEngine(i)"
+        (toggleEngine)="toggleEngineStatus(i)">
+      </app-engine-controls>
+    </ng-container>
+  </div>
+</div>

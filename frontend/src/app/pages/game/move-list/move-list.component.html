@@ -1,0 +1,62 @@
+<div class="controls">
+  <div class="control-item">
+    <button class="control-button" (click)="selectMove(currentMoveIndex - 1)">
+      <img src="/assets/icons/arrow-left.svg" alt="Previous Move" />
+    </button>
+  </div>
+  <div class="control-item">
+    <button class="control-button" (click)="selectMove(moves.length - 1)">
+      <img src="/assets/icons/fast-forward.svg" alt="Last Move" />
+    </button>
+  </div>
+  <div class="control-item">
+    <button class="control-button" (click)="selectMove(currentMoveIndex + 1)">
+      <img src="/assets/icons/arrow-right.svg" alt="Next Move" />
+    </button>
+  </div>
+</div>
+
+<div class="notation-container">
+  <div class="san-notation">
+    <h3>NOTACJA SAN</h3>
+    <div class="san-list">
+      <div class="start-fen">
+        <span>0.</span> <span>Startowa pozycja</span>
+      </div>
+      <div *ngFor="let pair of sanPairs">
+        <div class="move-row">
+          <span class="move-number">{{ pair.moveNumber }}.</span>
+          <span 
+            class="white-move"
+            [class.highlighted]="currentMoveIndex === pair.whiteIndex"
+            (click)="selectMove(pair.whiteIndex)">
+            {{ pair.white }}
+          </span>
+          <span 
+            *ngIf="pair.black"
+            class="black-move"
+            [class.highlighted]="currentMoveIndex === pair.blackIndex"
+            (click)="selectMove(pair.blackIndex)">
+            {{ pair.black }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fen-notation">
+    <h3>NOTACJA FEN</h3>
+    <div class="fen-container">
+      <input 
+        class="fen-text" 
+        readonly 
+        [value]="moves[currentMoveIndex]?.fen || 'Brak ruchów'"/>
+      <button class="fen-copy-button" (click)="copyFenToClipboard()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16" class="bi bi-copy">
+          <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+        </svg>
+        <span class="tooltip">Kopiuj</span>
+      </button>      
+    </div>
+  </div>
+</div>

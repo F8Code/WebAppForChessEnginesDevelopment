@@ -1,0 +1,40 @@
+<div class="engine-controls-wrapper">
+  <div class="engine-controls">
+
+    <div class="engine-header">
+      <div class="engine-name">
+        <input [(ngModel)]="engine.name" class="name-input" placeholder="Nazwa Silnika..." (input)="checkIfEngineCanBeSaved()" maxlength="20"/>
+      </div>
+      <input [(ngModel)]="engine.url" class="url-input" placeholder="URL Silnika..." (input)="checkIfEngineCanBeSaved()" maxlength="1000"/>
+    </div>
+
+    <textarea [(ngModel)]="engine.description" class="description-input" placeholder="Opis Silnika..." (input)="checkIfEngineCanBeSaved()" maxlength="2500"></textarea>
+
+    <div class="chat-box resizable">
+      <div class="chat-message" *ngFor="let message of engine.chatMessages">
+        <strong>{{ message.sender === 'user' ? 'Ty' : message.sender === 'system' ? 'System' : engine.name }}:</strong> {{ message.message }}
+      </div>
+    </div>
+
+    <div class="chat-controls">
+      <input [(ngModel)]="newMessage" class="chat-input" placeholder="Wiadomość do silnika..." 
+            [disabled]="!engine.isInDatabase || engine.isTesting" />
+      <button (click)="sendMessage()" class="chat-send-button" [disabled]="!engine.isInDatabase || engine.isTesting">Wyślij</button>
+    </div>
+
+    <div class="button-controls">
+      <div class="engine-status">
+        <label class="status-label">
+          <input type="checkbox" [(ngModel)]="engine.status" (change)="onToggleEngine()" 
+                [disabled]="!engine.isInDatabase || engine.isTesting" class="status-checkbox" />
+          <span class="status-text">{{ engine.isTesting ? 'Testowanie...' : (engine.status ? 'Silnik aktywny' : 'Silnik nieaktywny') }}</span>
+        </label>
+      </div>
+      <div class="action-buttons">
+        <button (click)="saveEngine()" class="save-engine-button" 
+                [disabled]="!canSaveEngine || !hasChanges()">Zapisz silnik</button>
+        <button (click)="removeEngine.emit()" class="remove-engine-button">Usuń silnik</button>
+      </div>
+    </div>    
+  </div>
+</div>

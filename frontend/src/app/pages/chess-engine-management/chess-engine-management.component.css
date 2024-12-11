@@ -1,0 +1,55 @@
+.chess-engine-management {
+  padding:20px;
+  max-width:1450px;
+  margin:0 auto;
+  font-family:Arial,sans-serif;
+}
+.add-engine-button {
+  display:block;
+  width:100%;
+  padding:5px 0;
+  position:relative;
+  background:linear-gradient(to bottom,rgba(88,88,88,0),rgba(128,128,128,0.7),rgba(88,88,88,0));
+  color:white;
+  font-size:40px;
+  font-family:'Times New Roman',Times,serif;
+  font-weight:normal;
+  text-align:center;
+  border:none;
+  cursor:pointer;
+  margin-bottom:20px;
+  transition:background-color 0.3s ease,box-shadow 0.3s ease,transform 0.2s ease;
+  border-top:2px solid rgba(255,255,255,0.3);
+  border-bottom:2px solid rgba(255,255,255,0.3);
+  overflow:hidden;
+}
+.add-engine-button::before {
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-image:url('/assets/images/matrix.jpg');
+  background-size:contain;
+  background-position:center;
+  opacity:0.3;
+  z-index:0;
+  transition:opacity 0.3s ease;
+}
+.add-engine-button:hover::before {
+  opacity:0.5;
+}
+.add-engine-button:hover {
+  background-color:rgba(128,128,128,0.2);
+  box-shadow:0px 4px 8px rgba(0,0,0,0.2);
+  transform:scale(1.02);
+}
+.add-engine-button:active {
+  transform:scale(0.98);
+}
+.engines-list {
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}

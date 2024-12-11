@@ -1,0 +1,22 @@
+<div class="auth-popup">
+  <h2>{{ isRegistering ? 'Regejestrowanie' : 'Logowanie' }}</h2>
+
+  <form [formGroup]="isRegistering ? registerForm : loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="username">Nazwa użytkownika</label>
+      <input id="username" formControlName="username" maxlength="20" placeholder="Wprowadź nazwę użytkownika..." />
+    </div>
+    <div class="form-group">
+      <label for="password">Hasło</label>
+      <input type="password" id="password" formControlName="password" maxlength="30" placeholder="Wprowadź hasło..." />
+    </div>
+    <div class="form-group" *ngIf="isRegistering">
+      <label for="email">Email</label>
+      <input id="email" formControlName="email" placeholder="Enter your email" />
+    </div>
+    <button type="submit" class="auth-btn">{{ isRegistering ? 'Zarejestruj się' : 'Zaloguj się' }}</button>
+    <button type="button" class="auth-toggle-btn" (click)="toggleRegister()">
+      {{ isRegistering ? 'Masz już konto? Zaloguj się' : 'Nie masz jeszcze konta? Zarejestruj się' }}
+    </button>
+  </form>
+</div>

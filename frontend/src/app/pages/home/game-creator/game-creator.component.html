@@ -1,0 +1,79 @@
+
+<div 
+  class="popup-overlay" 
+  [hidden]="!isPopupOpen && !isFadingOut" 
+  [class.fade-out]="isFadingOut" 
+  (click)="closePopup()">
+</div>
+
+<div class="popup" [hidden]="!isPopupOpen && !isFadingOut"  [class.fade-out]="isFadingOut">
+  <h2>Formularz Szybkiej Gry</h2>
+  <form (ngSubmit)="startQuickGame()">
+    <div class="form-group">
+      <label for="mode">Tryb:</label>
+      <label>
+        <input type="radio" name="is_ranked" [(ngModel)]="is_ranked" [value]="true"> Rankingowa
+      </label>
+      <label>
+        <input type="radio" name="is_ranked" [(ngModel)]="is_ranked" [value]="false"> Towarzyska
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label for="totalTime">Całkowity czas:</label>
+      <input type="range" id="totalTime" class="slider" [(ngModel)]="totalTime" name="totalTime" min="1" max="30" (input)="onTotalTimeChange()">
+      <span>{{ totalTime }} minut(y)</span>
+    </div>
+
+    <div class="form-group">
+      <label for="increment">Inkrement czasowy:</label>
+      <input type="range" id="increment" class="slider" [(ngModel)]="incrementTime" name="incrementTime" min="0" max="30" (input)="onIncrementTimeChange()">
+      <span>{{ incrementTime }} sekund(y)</span>
+    </div>
+
+    <div class="form-group">
+      <label for="player1">Użytkownik:</label>
+      <select id="player1" [(ngModel)]="player1Type" name="player1" (change)="onPlayer1TypeChange()">
+        <option value="Human">Człowiek</option>
+        <option value="Engine">Komputer</option>
+      </select>
+    </div>
+    
+    <div *ngIf="player1Type === 'Engine'" class="form-group">
+      <label for="engineSelect">Wybierz silnik:</label>
+      <select id="engineSelect" [(ngModel)]="selectedEngineUrl" name="selectedEngine">
+        <option *ngFor="let engine of acceptedEngines" [value]="engine.url">{{ engine.name }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      
+      <label for="player2">Przeciwnik:</label>
+      <select id="player2" [(ngModel)]="player2Type" name="player2">
+        <option value="Human">Człowiek</option>
+        <option value="Engine">Komputer</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      
+      <label for="min_elo">Min elo przeciwnika:</label>
+      <input type="range" id="min_elo" class="slider" [(ngModel)]="min_elo" name="min_elo" min="100" max="5000" (input)="onMinEloChange()">
+      <span>{{ min_elo }}</span>
+    </div>
+
+    <div class="form-group">
+      <label for="max_elo">Max elo przeciwnika:</label>
+      <input type="range" id="max_elo" class="slider" [(ngModel)]="max_elo" name="max_elo" min="100" max="5000" (input)="onMaxEloChange()">
+      <span>{{ max_elo }}</span>
+    </div>
+
+    <div class="form-group">
+      
+      <label for="description">Opis gry:</label>
+      <textarea id="description" [(ngModel)]="gameDescription" name="description" rows="3" maxlength="500"></textarea>
+    </div>
+
+    <button type="submit" [disabled]="isEngineRequiredAndNotSelected()">Zatwierdź</button>
+  </form>
+</div>

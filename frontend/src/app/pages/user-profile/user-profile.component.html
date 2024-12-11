@@ -1,0 +1,225 @@
+<div class="profile-page">
+  <div class="profile-container">
+    <div class="profile-row">
+      
+      <div class="user-info">
+        <h1 class="username">{{ userProfile?.username }}</h1>
+        <p class="created_at">Aktywny od: <span>{{ userProfile?.created_at | date:'dd.MM.yyyy' }}</span></p>
+        <p class="elo">ELO: <span>{{ userProfile?.elo }}</span></p>
+      </div>      
+
+      <div class="form-container">
+        <div class="form-group">
+          <label>Imię:</label>
+          <input type="text" [(ngModel)]="userProfile.name" (input)="onFieldChange()" placeholder="Podaj imię" maxlength="20"/>
+        </div>
+  
+        <div class="form-group">
+          <label>Nazwisko:</label>
+          <input type="text" [(ngModel)]="userProfile.surname" (input)="onFieldChange()" placeholder="Podaj nazwisko" maxlength="20"/>
+        </div>
+  
+        <div class="form-group">
+          <label>Narodowość:</label>
+          <select [(ngModel)]="userProfile.nationality" (change)="onFieldChange()">
+            <option value="" disabled>Wybierz narodowość</option>
+            <option *ngFor="let country of nationalities" [value]="country">
+              {{ country }}
+            </option>
+          </select>
+        </div>
+  
+        <button class="save-button" (click)="saveProfile()" [disabled]="!hasUnsavedChanges">Zapisz zmiany</button>
+      </div>
+    </div>
+  </div>  
+
+  <div class="list-container-wrapper">
+    
+    <div class="tabs-container">
+      <button
+        class="tab-button"
+        [class.active]="selectedView === 'games'"
+        (click)="onSelectedViewChange('games')"
+      >
+        GRY
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="selectedView === 'tournaments'"
+        (click)="onSelectedViewChange('tournaments')"
+      >
+        TURNIEJE
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="selectedView === 'engines'"
+        (click)="onSelectedViewChange('engines')"
+      >
+        SILNIKI
+      </button>
+    </div>
+
+    <div class="list-container">
+      <div class="scroll-area">
+        
+        <div *ngIf="selectedView === 'games'" class="history-list">
+          <div class="game-card clickable" *ngFor="let game of data" (click)="watchGame(game.game_id)">
+            
+            <div class="game-header">
+              <div class="info-icon" title="Opis gry" (mouseover)="showTooltip = true" (mouseout)="showTooltip = false">
+                <img src="assets/icons/info-circle.svg" alt="Informacja o grze" />
+                <div *ngIf="showTooltip" class="tooltip">
+                  {{ game.description }}
+                </div>
+              </div>
+              <div class="game-result">
+                <span [ngClass]="getResultClass(game.result, userProfile.username == game.player_white.username)">
+                  {{ getResult(game.result, userProfile.username == game.player_white.username) }}
+                </span>
+              </div>
+              <div class="game-description">
+                <span>{{ game.is_ranked ? 'Rankingowa' : 'Towarzyska' }}, {{ game.format_data.time_format }}</span>
+              </div>
+            </div>
+
+            <div class="game-details">
+              
+              <div class="player white">
+                <span class="elo">
+                  {{ getEloValue(game.player_white_substitute ? game.player_white_substitute.elo : game.player_white.elo, game.is_ranked) }}
+                  <span *ngIf="game.is_ranked" [ngClass]="getEloChangeClass(game.result, true)">
+                    {{ getEloChangeFormatted(game.result, true) }}
+                  </span>
+                </span>
+                <div class="icon">
+                  <img src="assets/icons/{{ game.player_white_substitute ? 'robot' : 'person' }}.svg" alt="Ikona gracza" />
+                </div>
+              </div>              
+   
+              <div class="player-info">
+                <div class="username">
+                  {{ game.player_white.username }}
+                  <div class="flag">
+                    <img *ngIf="game.player_white.nationality" src="assets/flags/{{ game.player_white.nationality }}.svg" alt="Flaga" class="flag-icon" />
+                  </div>
+                </div>
+                <div *ngIf="game.player_white_substitute" class="substitute">
+                  Silnik: <span>{{ game.player_white_substitute.name }}</span>
+                </div>
+              </div>
+            
+              <div class="vs-icon">
+                <img src="assets/icons/swords-clashing.svg" alt="Ikona walki" />
+              </div>
+        
+              <div class="player-info">
+                <div class="username">
+                  {{ game.player_black.username }}
+                  <div class="flag">
+                    <img *ngIf="game.player_black.nationality" src="assets/flags/{{ game.player_black.nationality }}.svg" alt="Flaga" class="flag-icon" />
+                  </div>
+                </div>
+                <div *ngIf="game.player_black_substitute" class="substitute">
+                  Silnik: <span>{{ game.player_black_substitute.name }}</span>
+                </div>
+              </div>
+              
+              <div class="player black">
+                <span class="elo">
+                  {{ getEloValue(game.player_black_substitute ? game.player_black_substitute.elo : game.player_black.elo, game.is_ranked) }}
+                  <span *ngIf="game.is_ranked" [ngClass]="getEloChangeClass(game.result, false)">
+                    {{ getEloChangeFormatted(game.result, false) }}
+                  </span>
+                </span>
+                <div class="icon">
+                  <img src="assets/icons/{{ game.player_black_substitute ? 'robot' : 'person' }}.svg" alt="Ikona gracza" />
+                </div>
+              </div>              
+            </div>
+          </div>
+        </div>        
+
+        <div *ngIf="selectedView === 'tournaments'" class="history-list">
+          <div class="tournament-card clickable" *ngFor="let tournament of data" (click)="watchTournament(tournament.tournament_id)">
+            
+            <div class="tournament-header">
+              <div class="info-icon" title="Opis turnieju" (mouseover)="showTooltip = true" (mouseout)="showTooltip = false">
+                <img src="assets/icons/info-circle.svg" alt="Informacja o turnieju" />
+                <div *ngIf="showTooltip" class="tooltip">
+                  {{ tournament.description }}
+                </div>
+              </div>
+              <div class="tournament-name">
+                {{ tournament.name }}, zwycięzca: 
+                <span [ngClass]="getWinnerColorClass(tournament.winner_name)">
+                  {{ tournament.winner_name }}
+                </span>
+              </div>
+              <div class="tournament-description">
+                <span>{{ tournament.is_ranked ? 'Rankingowa' : 'Towarzyska' }}, {{ tournament.format_data.time_format }}</span>
+              </div>
+            </div>
+ 
+            <div class="tournament-details">
+              
+              <div class="players-count">
+                Liczba graczy: <span class="gold">{{ tournament.current_player_count }}</span>
+              </div>
+
+              <div class="tournament-icons">
+                <div class="icon">
+                  <img src="assets/icons/{{ getPlayerModeIcon(tournament.format_data.player_mode, 'left') }}.svg" alt="Tryb gracza" />
+                </div>
+                <div class="vs-icon">
+                  <img src="assets/icons/swords-clashing.svg" alt="Ikona walki" />
+                </div>
+                <div class="icon">
+                  <img src="assets/icons/{{ getPlayerModeIcon(tournament.format_data.player_mode, 'right') }}.svg" alt="Tryb gracza" />
+                </div>
+              </div>
+
+              <div class="my-place">
+                Moje miejsce: <span class="gold">{{ getMyPosition(tournament.participants) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="selectedView === 'engines'" class="history-list">
+          <div class="engine-card" *ngFor="let engine of userEngines" (click)="goToEngineManagement()">
+            
+            <div class="engine-header">
+              <div></div>
+              <div class="engine-name">{{ engine.name }}</div>
+              <div class="created-at">Utworzony: {{ engine.created_at | date:'dd.MM.yyyy' }}</div>
+            </div>
+
+            <div class="engine-details">
+              
+              <div class="robot-icon">
+                <img src="assets/icons/robot.svg" alt="Robot Icon" />
+              </div>
+              
+              <div class="engine-info">
+                <p><strong>URL: </strong> <a [href]="engine.url" target="_blank">{{ engine.url }}</a></p>
+                <p><strong>ELO:</strong> {{ engine.elo }}</p>
+                <p><strong>Opis:</strong> {{ engine.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="currentPage === 1">
+        <img src="assets/icons/arrow-left.svg" alt="Poprzednia strona" />
+      </button>
+      <span>Strona {{ currentPage }}</span>
+      <button (click)="nextPage()" [disabled]="!hasMoreData">
+        <img src="assets/icons/arrow-right.svg" alt="Następna strona" />
+      </button>
+    </div>
+  </div>  
+</div>

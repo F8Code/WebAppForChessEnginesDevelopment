@@ -1,0 +1,182 @@
+<div class="filter-panel" [class.open]="isFilterPanelOpen">
+    <h1>
+      Panel filtrów
+    </h1>
+    <div class="filter-content">
+      <form *ngIf="isGameList">
+        <div class="filter-group">
+          <h4>
+            Opcje sortowania
+          </h4>
+          <label>
+            Sortuj gry po:
+          </label>
+          <select [(ngModel)]="sort.game.field" name="gameSortField">
+            <option value="max_elo">
+              ELO przeciwnika
+            </option>
+            <option value="time">
+              Format czasowy
+            </option>
+          </select>
+          <label>
+            Rosnąco:
+            <input type="checkbox" [(ngModel)]="sort.game.ascending" name="gameSortAscending"
+            />
+          </label>
+        </div>
+        <div class="filter-group">
+          <h4>
+            Opcje filtrowania
+          </h4>
+          <label>
+            Punktacja:
+          </label>
+          <select [(ngModel)]="filters.game.is_ranked" name="gameScoring">
+            <option value="">
+              Dowolna
+            </option>
+            <option [ngValue]="true">
+              Rankingowa
+            </option>
+            <option [ngValue]="false">
+              Towarzyska
+            </option>
+          </select>
+          <label>
+            Typ gry:
+          </label>
+          <select [(ngModel)]="filters.game.player_mode" name="gameType">
+            <option value="">
+              Dowolny
+            </option>
+            <option value="Human-Human">
+              Człowiek vs Człowiek
+            </option>
+            <option value="Human-Engine">
+              Człowiek vs Komputer
+            </option>
+            <option value="Engine-Human">
+              Komputer vs Człowiek
+            </option>
+            <option value="Engine-Engine">
+              Komputer vs Komputer
+            </option>
+          </select>
+          <label>
+            Przedział czasu gry (minuty):
+          </label>
+          <div class="custom-slider">
+            <ngx-slider [(value)]="filters.game.min_time" [(highValue)]="filters.game.max_time"
+            [options]="timeSliderOptions">
+            </ngx-slider>
+          </div>
+          <label>
+            Przedział inkrementu (sekundy):
+          </label>
+          <div class="custom-slider">
+            <ngx-slider [(value)]="filters.game.min_increment" [(highValue)]="filters.game.max_increment"
+            [options]="incrementSliderOptions">
+            </ngx-slider>
+          </div>
+          <label>
+            ELO przeciwnika:
+          </label>
+          <div class="custom-slider">
+            <ngx-slider [(value)]="filters.game.min_elo" [(highValue)]="filters.game.max_elo"
+            [options]="eloSliderOptions">
+            </ngx-slider>
+          </div>
+        </div>
+        <button (click)="applyFilters()">
+          Zastosuj
+        </button>
+      </form>
+      <form *ngIf="!isGameList">
+        <div class="filter-group">
+          <h4>
+            Opcje sortowania
+          </h4>
+          <label>
+            Sortuj turnieje po:
+          </label>
+          <select [(ngModel)]="sort.tournament.field" name="tournamentSortField">
+            <option value="max_elo">
+              Maks ELO
+            </option>
+            <option value="time">
+              Format czasowy
+            </option>
+            <option value="player_count">
+              Liczba graczy
+            </option>
+          </select>
+          <label>
+            Rosnąco:
+            <input type="checkbox" [(ngModel)]="sort.tournament.ascending" name="tournamentSortAscending"
+            />
+          </label>
+        </div>
+        <div class="filter-group">
+          <h4>
+            Opcje filtrowania
+          </h4>
+          <label>
+            Punktacja:
+          </label>
+          <select [(ngModel)]="filters.tournament.is_ranked" name="tournamentScoring">
+            <option value="">
+              Dowolna
+            </option>
+            <option [ngValue]="true">
+              Rankingowa
+            </option>
+            <option [ngValue]="false">
+              Towarzyska
+            </option>
+          </select>
+          <label>
+            Typ gry:
+          </label>
+          <select [(ngModel)]="filters.tournament.player_mode" name="gameType">
+            <option value="">
+              Dowolny
+            </option>
+            <option value="Human-Human">
+              Ludzie vs Ludzie
+            </option>
+            <option value="Engine-Engine">
+              Komputery vs Komputery
+            </option>
+          </select>
+          <label>
+            Przedział czasu turnieju (minuty):
+          </label>
+          <div class="custom-slider">
+            <ngx-slider [(value)]="filters.tournament.min_time" [(highValue)]="filters.tournament.max_time"
+            [options]="timeSliderOptions">
+            </ngx-slider>
+          </div>
+          <label>
+            Przedział inkrementu (sekundy):
+          </label>
+          <div class="custom-slider">
+            <ngx-slider [(value)]="filters.tournament.min_increment" [(highValue)]="filters.tournament.max_increment"
+            [options]="incrementSliderOptions">
+            </ngx-slider>
+          </div>
+          <label>
+            ELO turnieju:
+          </label>
+          <div class="custom-slider">
+            <ngx-slider [(value)]="filters.tournament.min_elo" [(highValue)]="filters.tournament.max_elo"
+            [options]="eloSliderOptions">
+            </ngx-slider>
+          </div>
+        </div>
+        <button (click)="applyFilters()">
+          Zastosuj
+        </button>
+      </form>
+    </div>
+  </div>

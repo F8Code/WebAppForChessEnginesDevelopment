@@ -1,0 +1,63 @@
+ngx-slider style options:
+
+ngx-slider {
+  .ngx-slider-span {
+
+  }
+
+  .ngx-slider-bar-wrapper {
+
+  }
+
+  .ngx-slider-right-out-selection {
+
+  }
+
+  .ngx-slider-full-bar {
+
+  }
+
+  .ngx-slider-selection-bar {
+
+  }
+
+  .ngx-slider-pointer-min {
+
+  }
+
+  .ngx-slider-pointer-max {
+
+  }
+
+  .ngx-slider-bubble {
+
+  }
+
+  .ngx-slider-limit {
+
+  }
+
+  .ngx-slider-floor {
+
+  }
+
+  .ngx-slider-ceil {
+
+  }
+
+  .ngx-slider-model-value {
+
+  }
+
+  .ngx-slider-model-high {
+
+  }
+
+  .ngx-slider-combined {
+
+  }
+
+  .ngx-slider-ticks {
+
+  }
+}

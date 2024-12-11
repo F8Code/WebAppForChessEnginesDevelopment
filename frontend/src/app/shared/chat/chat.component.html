@@ -1,0 +1,28 @@
+<div class="chat-container">
+  <h3>Chat ({{ isGame ? 'Gra' : 'Turniej' }})</h3>
+
+  <div class="chat-messages">
+    <ng-container *ngFor="let message of chatMessages">
+      <p *ngIf="message.sender === 'Serwer'; else userMessage">
+        {{ message.content }}
+      </p>
+      <ng-template #userMessage>
+        <p>
+          <strong>{{ message.sender }}:</strong> {{ message.content }}
+        </p>
+      </ng-template>
+    </ng-container>
+  </div>
+
+  <div class="chat-input-container">
+    <input 
+      #chatInput 
+      type="text" 
+      placeholder="Napisz wiadomość..." 
+      (keydown.enter)="sendMessage(chatInput.value); chatInput.value='';" 
+    />
+    <button (click)="sendMessage(chatInput.value); chatInput.value='';">
+      Wyślij
+    </button>
+  </div>
+</div>

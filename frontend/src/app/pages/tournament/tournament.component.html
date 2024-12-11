@@ -1,0 +1,188 @@
+<div class="tournament-layout">
+  
+  <div class="left-panel">
+    <div class="chat-container">
+      <app-chat
+        [isGame]="false"
+        [myUsername]="myUsername"
+        (messageSent)="handleChatMessage($event)">
+      </app-chat>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="tournament-info">
+      <div class="participants-section-wrapper">
+
+        <h3 *ngIf="!isTournamentEnded && !isTournamentStarted">Lista uczestników turnieju</h3>
+        <h3 *ngIf="!isTournamentEnded && isTournamentStarted">Turniej w toku</h3>
+        <p *ngIf="isTournamentEnded">Turniej zakończony. Zwycięzca: <strong>{{ tournamentDetails.winner_name }}</strong></p>
+
+        <div *ngIf="!isTournamentEnded && !isTournamentStarted" class="participants-section">
+          <h3>Uczestnicy turnieju</h3>
+          <div class="participants-list">
+            <div class="participant-slot" *ngFor="let slot of playerSlots; let i = index">
+              
+              <div *ngIf="!slot.isEmpty" class="participant">
+                <div class="participant-info">
+                  <img *ngIf="slot.player.nationality" src="assets/flags/{{ slot.player.nationality }}.svg" alt="Flaga" class="flag-icon" />
+                  <div class="participant-details">
+                    <span class="participant-name">
+                      {{ slot.player.username }}
+                      <span *ngIf="!slot.player_substitute" class="participant-elo">({{ slot.player.elo }})</span>
+                    </span>
+                    <span *ngIf="slot.player_substitute" class="substitute-info">
+                      Silnik: {{ slot.player_substitute.name }} 
+                      <span class="participant-elo">({{ slot.player_substitute.elo }})</span>
+                    </span>
+                  </div>
+                </div>
+                <button
+                  *ngIf="isOwner && slot.player.username != myUsername"
+                  class="remove-button"
+                  (click)="removeParticipant(slot.player.username)"
+                >
+                  Usuń
+                </button>
+              </div>
+        
+              
+              <div *ngIf="slot.isEmpty" class="participant empty-slot">
+                <span class="slot-info">Miejsce wolne</span>
+                <button *ngIf="isOwner && playerSlots.length > minSlots" class="decrease-button" (click)="decreaseSlots()">Usuń miejsce</button>
+              </div>
+            </div>
+          </div>
+        
+          <div class="actions">
+            <button *ngIf="isOwner && playerSlots.length < maxSlots" class="add-button" (click)="increaseSlots()">Dodaj miejsce</button>
+            <button *ngIf="isOwner" class="start-button" (click)="startTournament()" [disabled]="participants.length < 2">
+              Rozpocznij turniej
+            </button>
+          </div>
+        </div>
+        
+        <div *ngIf="!isTournamentEnded && isTournamentStarted || isTournamentEnded" class="tournament-progress">
+          <table *ngIf="resultsMatrix?.length" class="results-table">
+            <thead>
+              <tr>
+                <th>Gracz</th>
+                <th *ngFor="let participant of participants; let i = index">M{{ i + 1 }}</th>
+                <th>Punkty</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let participant of participants; let i = index">
+                <td class="player-cell">
+                  <img *ngIf="participant.player.nationality" 
+                       src="assets/flags/{{ participant.player.nationality }}.svg" 
+                       alt="Flaga" class="flag-icon" />
+                  {{ participant.player.username }}
+                  <span *ngIf="participant.player_substitute">({{ participant.player_substitute.name }})</span>
+                  <span class="elo">
+                    ({{ participant.player_substitute?.elo || participant.player.elo }})
+                  </span>
+                </td>
+                <td *ngFor="let opponent of participants; let j = index" class="score-cell">
+                  {{ resultsMatrix[i][j] || '-' }}
+                </td>
+                <td class="points-cell">{{ participant.score }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>          
+      </div>
+
+      <div class="game-list-section">
+        <h3>Rozegrane gry</h3>
+        <div class="history-list">
+          <div *ngIf="games?.length > 0; else emptyMessage">
+            <div class="tournament-game-card clickable" *ngFor="let game of games" (click)="watchGame(game.game_id)">
+              
+              <div class="tournament-game-header">
+                <div class="info-icon" title="Opis gry" (mouseover)="showTooltip = true" (mouseout)="showTooltip = false">
+                  <div class="info-icon">
+                    <img src="assets/icons/info-circle.svg" alt="Informacja o grze" />
+                  </div>
+                  <div *ngIf="showTooltip" class="tooltip">
+                    {{ game.description }}
+                  </div>
+                </div>
+                <div class="tournament-game-description">
+                  Gra {{ game.is_ranked ? 'rankingowa' : 'towarzyska' }}, Format: {{ game.format_data.time_format }}
+                </div>
+              </div>
+      
+              <div class="tournament-game-details">
+                
+                <div class="player white">
+                  <span class="elo">
+                    {{ getEloValue(game.player_white_substitute ? game.player_white_substitute.elo : game.player_white.elo, game.is_ranked) }}
+                    <span *ngIf="game.is_ranked" [ngClass]="getEloChangeClass(game.result, true)">
+                      {{ getEloChangeFormatted(game.result, true) }}
+                    </span>
+                  </span>
+                  <div class="icon">
+                    <img src="assets/icons/{{ game.player_white_substitute ? 'robot' : 'person' }}.svg" alt="Ikona gracza" />
+                  </div>
+                </div>
+      
+                <div class="player-info">
+                  <div class="username">
+                    {{ game.player_white.username }}
+                    <div class="flag">
+                      <img *ngIf="game.player_white.nationality" src="assets/flags/{{ game.player_white.nationality }}.svg" alt="Flaga" class="flag-icon" />
+                    </div>
+                  </div>
+                  <div *ngIf="game.player_white_substitute" class="substitute">
+                    Silnik: <span>{{ game.player_white_substitute.name }}</span>
+                  </div>
+                  <div [ngClass]="getTournamentResultClass(game.result, true)">{{ getTournamentResult(game.result, true) }}</div>
+                </div>
+       
+                <div class="vs-icon">
+                  <img src="assets/icons/swords-clashing.svg" alt="Ikona walki" />
+                </div>
+
+                <div class="player-info">
+                  <div class="username">
+                    {{ game.player_black.username }}
+                    <div class="flag">
+                      <img *ngIf="game.player_black.nationality" src="assets/flags/{{ game.player_black.nationality }}.svg" alt="Flaga" class="flag-icon" />
+                    </div>
+                  </div>
+                  <div *ngIf="game.player_black_substitute" class="substitute">
+                    Silnik: <span>{{ game.player_black_substitute.name }}</span>
+                  </div>
+                  <div [ngClass]="getTournamentResultClass(game.result, false)">{{ getTournamentResult(game.result, false) }}</div>
+                </div>
+      
+                
+                <div class="player black">
+                  <span class="elo">
+                    {{ getEloValue(game.player_black_substitute ? game.player_black_substitute.elo : game.player_black.elo, game.is_ranked) }}
+                    <span *ngIf="game.is_ranked" [ngClass]="getEloChangeClass(game.result, false)">
+                      {{ getEloChangeFormatted(game.result, false) }}
+                    </span>
+                  </span>
+                  <div class="icon">
+                    <img src="assets/icons/{{ game.player_black_substitute ? 'robot' : 'person' }}.svg" alt="Ikona gracza" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #emptyMessage>
+            <div class="empty-message">
+              <p>Brak gier do wyświetlenia.</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>            
+    </div>
+  </div>
+
+  <div class="exit-button-container">
+    <button class="exit-button" (click)="exitTournamentButton()">Wyjdź z turnieju</button>
+  </div>
+</div>

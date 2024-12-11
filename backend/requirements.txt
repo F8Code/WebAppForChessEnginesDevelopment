@@ -1,0 +1,9 @@
+Django
+psycopg2
+django-cors-headers
+djangorestframework
+djangorestframework_simplejwt
+adrf
+channels
+channels-redis
+daphne

@@ -1,0 +1,210 @@
+
+.engine-controls-wrapper {
+  position:relative;
+  padding:10px;
+  box-shadow:0 4px 8px rgba(0,0,0,0.1);
+  border-radius:12px;
+  border:3px solid #312000;
+  background-image:url('/assets/textures/wood-texture.jpg');
+  background-size:cover;
+  z-index:1;
+}
+.engine-controls-wrapper::before {
+  content:'';
+  position:absolute;
+  z-index:0;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgb(138,97,35);
+  mix-blend-mode:multiply;
+  pointer-events:none;
+}
+.engine-controls {
+  position:relative;
+  padding:10px;
+  border:3px solid #312000;
+  box-shadow:0 4px 8px rgba(0,0,0,0.1);
+  background-image:url('/assets/textures/wood-texture.jpg');
+  background-size:cover;
+  z-index:3;
+}
+.engine-controls::before {
+  content:'';
+  position:absolute;
+  z-index:2;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgb(197,155,85);
+  mix-blend-mode:multiply;
+  pointer-events:none;
+}
+.engine-header {
+  position:relative;
+  z-index:4;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:15px;
+  margin-bottom:15px;
+}
+.name-input,.url-input {
+  position:relative;
+  z-index:4;
+  flex:1;
+  padding:5px;
+  border:2px solid #312000;
+  border-radius:4px;
+  font-size:20px;
+  background-color:rgb(119,126,91);
+  box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);
+}
+.description-input {
+  position:relative;
+  z-index:4;
+  width:calc(100% - 10px);
+  min-height:60px;
+  max-height:calc(100vh - 500px);
+  padding:4px;
+  border:2px solid #312000;
+  border-radius:4px;
+  resize:vertical;
+  margin-bottom:15px;
+  font-size:14px;
+  font-family:Arial,sans-serif;
+  background-color:rgb(119,126,91);
+  box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);
+}
+.chat-box {
+  position:relative;
+  z-index:4;
+  height:200px;
+  min-height:60px;
+  max-height:calc(100vh - 500px);
+  overflow-y:auto;
+  border:2px solid #312000;
+  border-radius:4px;
+  padding:10px;
+  margin-bottom:15px;
+  background-color:#fff;
+  resize:vertical;
+  background:linear-gradient(to top,rgb(93,99,72),rgb(140,148,107));
+  box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);
+}
+.chat-message {
+  padding:5px 0;
+  border-bottom:1px solid rgb(175,175,175);
+  font-size:14px;
+}
+.chat-controls {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
+}
+.chat-input {
+  position:relative;
+  z-index:4;
+  flex:1;
+  padding:10px;
+  border:2px solid #312000;
+  border-radius:4px;
+  font-size:14px;
+  background-color:rgb(119,126,91);
+  box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);
+}
+.chat-send-button {
+  padding:12px 15px;
+  border:none;
+  background-color:#3d3d3d;
+  color:white;
+  cursor:pointer;
+  border-radius:5px;
+  white-space:nowrap;
+  min-width:70px;
+}
+.chat-send-button:disabled {
+  background-color:#ccc;
+  cursor:not-allowed;
+}
+.chat-send-button:hover {
+  background-color:#8ba8a5;
+}
+.status-label {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:16px;
+  color:#333;
+}
+.status-checkbox {
+  width:20px;
+  height:20px;
+  cursor:pointer;
+  accent-color:#007bff;
+  transition:transform 0.2s ease;
+}
+.status-checkbox:checked {
+  transform:scale(1.2);
+}
+.status-text {
+  font-weight:bold;
+  font-size:18px;
+  color:#333;
+  transition:color 0.3s ease;
+}
+.status-text.active {
+  color:#007bff;
+}
+.status-text.inactive {
+  color:#a54842;
+}
+.button-controls {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  z-index:4;
+}
+.engine-status {
+  font-size:14px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  z-index:4;
+}
+.action-buttons {
+  display:flex;
+  gap:10px;
+  z-index:4;
+}
+.save-engine-button,.remove-engine-button {
+  padding:10px 15px;
+  font-size:14px;
+  font-weight:bold;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  transition:background-color 0.3s ease;
+}
+.save-engine-button {
+  background-color:#4286a5;
+  color:white;
+}
+.save-engine-button:hover {
+  background-color:#44b8c7;
+}
+.save-engine-button:disabled {
+  background-color:#3d3d3d;
+  cursor:not-allowed;
+}
+.remove-engine-button {
+  background-color:#a54842;
+  color:white;
+}
+.remove-engine-button:hover {
+  background-color:#c74444;
+}

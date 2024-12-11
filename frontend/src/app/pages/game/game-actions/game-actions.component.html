@@ -1,0 +1,29 @@
+<div class="action-buttons">
+  <div class="action-item">
+    <button 
+      class="resign" 
+      [ngClass]="{ highlighted: isResignHighlighted }" 
+      [disabled]="!isGameActive" 
+      (click)="handleResignClick()">
+      <img src="assets/icons/special-actions/resign.svg" alt="Poddaj się" />
+    </button>
+  </div>
+  <div class="action-item">
+    <button 
+      class="draw" 
+      [ngClass]="{ highlighted: isDrawHighlighted || isDrawHighlightedByParent }" 
+      [disabled]="!isGameActive" 
+      (click)="handleDrawClick()">
+      <img src="assets/icons/special-actions/draw.svg" alt="Remis" />
+    </button>
+  </div>
+  <div class="action-item">
+    <button 
+      class="undo" 
+      [ngClass]="{ highlighted: isUndoHighlighted || isUndoHighlightedByParent }" 
+      [disabled]="!isGameActive" 
+      (click)="handleUndoClick()">
+      <img src="assets/icons/special-actions/undo.svg" alt="Cofnij ruch" />
+    </button>
+  </div>
+</div>

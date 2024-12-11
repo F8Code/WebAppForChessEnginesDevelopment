@@ -1,0 +1,61 @@
+<nav>
+    <ul>
+      <li>
+        <a routerLink="/about" class="svg-button">
+          <img src="assets/icons/info-circle.svg" alt="O nas" />
+        </a>
+      </li>
+      <li>
+        <a routerLink="/home">
+          Strona główna
+        </a>
+      </li>
+      <div class="separator">
+      </div>
+      
+      <ng-container *ngIf="currentTournamentId || currentGameId">
+        <li *ngIf="currentTournamentId">
+          <a [routerLink]="['/tournament', currentTournamentId]">
+            Turniej
+          </a>
+        </li>
+        <li *ngIf="currentGameId && !isTournamentGame">
+          <a [routerLink]="['/game', currentGameId]">
+            Gra
+          </a>
+        </li>
+        <li *ngIf="currentGameId && isTournamentGame">
+          <a [routerLink]="['/game', currentGameId]">
+            Gra turniejowa
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+    <div class="login-section">
+      <ng-container *ngIf="!isLoggedIn(); else loggedInTemplate">
+        <a routerLink="/login" class="login-link">
+          Zaloguj się
+        </a>
+      </ng-container>
+      <ng-template #loggedInTemplate>
+        <div class="dropdown">
+          <span class="dropbtn">
+            {{ username }}
+            <img src="assets/icons/person-circle.svg" alt="Użytkownik" class="profile-icon"
+            />
+          </span>
+          <div class="dropdown-content">
+            <a routerLink="/user-profile">
+              Moje konto
+            </a>
+            <a routerLink="/chess-engine-management">
+              Komputery szachowe
+            </a>
+            <a (click)="logout()">
+              Wyloguj
+            </a>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </nav>

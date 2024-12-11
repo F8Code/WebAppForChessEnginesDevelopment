@@ -1,0 +1,18 @@
+<div class="top-buttons">
+  <button (click)="toggleGameCreator()" [disabled]="isInGameOrTournament">Utwórz grę</button>
+  <button (click)="toggleTournamentCreator()" [disabled]="isInGameOrTournament">Utwórz turniej</button>
+</div>
+
+<app-game-creator
+  [isPopupOpen]="showGameCreator"
+  (popupClosed)="showGameCreator = false">
+</app-game-creator>
+
+<app-tournament-creator
+  [isPopupOpen]="showTournamentCreator"
+  (popupClosed)="showTournamentCreator = false">
+</app-tournament-creator>
+
+<hr class="separator-line" />
+
+<app-game-tournament-list></app-game-tournament-list>

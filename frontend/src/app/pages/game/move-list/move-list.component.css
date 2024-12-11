@@ -1,0 +1,245 @@
+:host {
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  overflow:hidden;
+}
+.controls {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  align-items:center;
+  justify-items:center;
+  height:50px;
+  border-left:3px solid #312000;
+  border-right:3px solid #312000;
+  border-top:3px solid #312000;
+}
+.control-item {
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:101%;
+  height:95%;
+  border-left:3px solid #312000;
+  border-right:3px solid #312000;
+  background-image:url('/assets/textures/wood-texture.jpg');
+  z-index:5;
+}
+.control-item::before {
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgb(138,97,35);
+  mix-blend-mode:multiply;
+  z-index:1;
+  pointer-events:none;
+  box-shadow:inset 0px 0px 10px rgb(0,0,0);
+}
+.control-button {
+  background:none;
+  border:none;
+  padding:0;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:40px;
+  height:40px;
+  transition:transform 0.2s ease;
+}
+.control-button img {
+  width:100%;
+  height:auto;
+  transition:opacity 0.2s ease;
+}
+.control-button:hover {
+  transform:scale(1.1);
+}
+.control-button:active {
+  transform:scale(0.9);
+}
+.control-button img:hover {
+  opacity:0.8;
+}
+.notation-container {
+  height:calc(100% - 30px);
+  flex-grow:1;
+  display:flex;
+  flex-direction:column;
+}
+.san-notation {
+  overflow-y:auto;
+  border-left:3px solid #312000;
+  border-right:3px solid #312000;
+  border-top:3px solid #312000;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  flex-grow:1;
+  background-image:url('/assets/textures/wood-texture.jpg');
+  background-size:cover;
+  position:relative;
+}
+.san-notation::before {
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgb(197,155,85);
+  mix-blend-mode:multiply;
+  pointer-events:none;
+  z-index:1;
+}
+.san-notation h3 {
+  margin:0;
+  font-size:20px;
+  font-weight:bold;
+  color:#333;
+  padding-bottom:5px;
+  text-align:center;
+}
+.san-list {
+  height:100%;
+  overflow-y:auto;
+  font-family:'Roboto Slab',serif;
+  font-size:16px;
+  line-height:1.6;
+  border:2px solid #312000;
+  z-index:3;
+  background:linear-gradient(to top,rgb(93,99,72),rgb(140,148,107));
+  box-shadow:inset 0px 0px 10px rgba(0,0,0,0.7);
+}
+.san-list .move-row {
+  display:flex;
+  justify-content:space-between;
+  border-top:1px solid rgb(175,175,175);
+  mix-blend-mode:multiply;
+}
+.san-list .move-number {
+  flex:0 0 30px;
+  border-right:2px solid rgb(241,241,241);
+}
+.san-list .white-move {
+  flex:1;
+  text-align:left;
+  border-right:2px solid rgb(241,241,241);
+}
+.san-list .black-move {
+  flex:1;
+  text-align:left;
+}
+.san-list span {
+  padding:2px 5px;
+  cursor:pointer;
+}
+.san-list span.highlighted {
+  background-color:#ebe1c5;
+  border-radius:3px;
+  font-weight:bold;
+}
+.fen-notation {
+  height:50px;
+  border-left:3px solid #312000;
+  border-right:3px solid #312000;
+  border-bottom:3px solid #312000;
+  padding:10px;
+  margin-bottom:10px;
+  position:relative;
+  background-image:url('/assets/textures/wood-texture.jpg');
+  background-size:cover;
+}
+.fen-notation::before {
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgb(197,155,85);
+  mix-blend-mode:multiply;
+  z-index:1;
+  pointer-events:none;
+}
+.fen-notation h3 {
+  margin:-10px;
+  margin-bottom:0;
+  font-size:20px;
+  font-weight:bold;
+  color:#333;
+  padding-bottom:5px;
+  text-align:center;
+}
+.fen-container {
+  display:flex;
+  align-items:center;
+}
+.fen-text {
+  flex:1;
+  border:2px solid #312000;
+  padding:5px;
+  overflow-x:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font-family:'Roboto Slab',serif;
+  font-size:14px;
+  box-sizing:border-box;
+  height:100%;
+  z-index:3;
+  background-color:rgb(119,126,91);
+  box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);
+}
+.fen-copy-button {
+  position:relative;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:0;
+  margin-left:5px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:30px;
+  height:30px;
+}
+.fen-copy-button .tooltip {
+  position:absolute;
+  bottom:110%;
+  left:10%;
+  transform:translateX(-50%);
+  background-color:rgba(0,0,0,0.8);
+  color:white;
+  font-size:12px;
+  font-weight:bold;
+  padding:5px 10px;
+  border-radius:5px;
+  white-space:nowrap;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity 0.3s ease;
+  z-index:10;
+}
+.fen-copy-button:hover .tooltip {
+  visibility:visible;
+}
+.fen-copy-button:active .tooltip {
+  visibility:hidden;
+}
+.fen-copy-button:hover {
+  transform:scale(1.1);
+}
+.fen-copy-button:active {
+  transform:scale(0.9);
+}
+.fen-copy-button svg {
+  width:30px;
+  height:30px;
+  transition:fill 0.2s ease;
+}

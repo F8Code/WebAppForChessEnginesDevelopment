@@ -1,0 +1,302 @@
+<div class="main-container">
+  
+  <div
+    class="filter-panel"
+    [class.open]="isFilterPanelOpen">
+    <app-game-tournament-filters
+      [isGameList]="isGameList"
+      [isFilterPanelOpen]="isFilterPanelOpen"
+      (filtersChanged)="onFiltersChanged($event)"
+    ></app-game-tournament-filters>
+  </div>
+
+  <div class="outer-list-container">
+    <div class="list-and-tabs-wrapper-outer">
+      <div class="list-and-tabs-wrapper-inner">
+        
+        <div class="tabs-container">
+          <button
+            class="tab-button"
+            [class.active]="!listUsedForSpectating"
+            (click)="refreshList(false)"
+          >
+            GRAJ
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="listUsedForSpectating"
+            (click)="refreshList(true)"
+          >
+            OGLĄDAJ
+          </button>
+          <button class="refresh-button" (click)="refreshList()">
+            <img src="assets/icons/refresh.svg" alt="Odśwież" />
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="isGameList"
+            (click)="switchToGameList()"
+          >
+            GRY
+          </button>
+          <button
+            class="tab-button"
+            [class.active]="!isGameList"
+            (click)="switchToTournamentList()"
+          >
+            TURNIEJE
+          </button>
+        </div>
+
+        <div class="list-content">
+          <div class="scroll-area">
+            <ul class="item-list">
+              
+              <ng-container *ngIf="isGameList; else tournamentList">
+                <ng-container *ngIf="games.length > 0; else emptyGames">
+                  <li *ngFor="let game of games" class="game-card" [class.clickable]="listUsedForSpectating" 
+                      (click)="listUsedForSpectating ? joinGame(game.game_id) : null">
+                    
+                    <div class="game-header">
+                      <div class="info-icon" title="Opis gry" (mouseover)="showTooltip = true" (mouseout)="showTooltip = false">
+                        <img src="assets/icons/info-circle.svg" alt="Informacja o grze" />
+                        <div *ngIf="showTooltip" class="tooltip">
+                          {{ game.description }}
+                        </div>
+                      </div>
+                      <div class="game-description">
+                        Gra {{ game.is_ranked ? 'rankingowa' : 'towarzyska' }}, Format: {{ game.format_data.time_format }}
+                      </div>
+                      <div class="elo-restrictions">
+                        <div class="min-elo">Min ELO: {{ game.restrictions_data?.min_elo || 'Brak' }}</div>
+                        <div class="max-elo">Max ELO: {{ game.restrictions_data?.max_elo || 'Brak' }}</div>
+                      </div>
+                    </div>
+   
+                    <div *ngIf="!listUsedForSpectating" class="game-details-awaiting">
+                      
+                      <div class="player-creator">
+                        <div class="player-icon">
+                          <span class="elo">
+                            {{
+                              game.player_white
+                                ? (game.player_white_substitute ? game.player_white_substitute.elo : game.player_white.elo)
+                                : (game.player_black_substitute ? game.player_black_substitute.elo : game.player_black.elo)
+                            }}
+                          </span>
+                          <div class="icon">
+                            <img
+                              src="assets/icons/{{ game.player_white_substitute || game.player_black_substitute ? 'robot' : 'person' }}.svg"
+                              alt="Ikona twórcy"
+                            />
+                          </div>
+                        </div>
+                        <div class="player-info">
+                          <div class="username">
+                            {{ game.player_white?.username || game.player_black?.username }}
+                            <img
+                              *ngIf="game.player_white?.nationality || game.player_black?.nationality"
+                              src="assets/flags/{{ game.player_white?.nationality || game.player_black?.nationality }}.svg"
+                              alt="Flaga"
+                              class="flag-icon"
+                            />
+                          </div>
+                          <div *ngIf="game.player_white_substitute || game.player_black_substitute" class="substitute">
+                            Silnik: <span>{{ game.player_white_substitute?.name || game.player_black_substitute?.name }}</span>
+                          </div>
+                        </div>
+                      </div>
+    
+                      <div class="vs-icon">
+                        <img src="assets/icons/swords-clashing.svg" alt="Ikona walki" />
+                      </div>
+     
+                      <div class="joining-player">
+                        <div class="username">
+                          {{ userProfile?.username }}
+                          <img
+                            *ngIf="userProfile?.nationality"
+                            src="assets/flags/{{ userProfile?.nationality }}.svg"
+                            alt="Flaga"
+                            class="flag-icon"
+                          />
+                        </div>
+                        <div class="player-icon">
+                          <span class="elo">
+                            {{ getJoiningPlayerIcon(game.format_data.player_mode) === 'robot' ? getSelectedEngineElo(game.game_id) : userProfile?.elo || '' }}
+                          </span>
+                          <div class="icon">
+                            <img src="assets/icons/{{ getJoiningPlayerIcon(game.format_data.player_mode) }}.svg" alt="Ikona dołączającego" />
+                          </div>
+                        </div>
+                        <select *ngIf="getJoiningPlayerIcon(game.format_data.player_mode) === 'robot'" [(ngModel)]="selectedEngineUrls[game.game_id]">
+                          <option *ngFor="let engine of acceptedEngines" [value]="engine.url">{{ engine.name }}</option>
+                        </select>
+                        <div class="join-button-container">
+                          <button 
+                            class="join-button" 
+                            (click)="joinGame(game.game_id)" 
+                            [disabled]="isJoinDisabled(game)">
+                            Dołącz
+                          </button>
+                        </div>                        
+                      </div>
+                    </div>
+                 
+                    <div *ngIf="listUsedForSpectating" class="game-details-ongoing">
+                      <div class="player white">
+                        <div class="elo">
+                          {{ game.player_white_substitute ? game.player_white_substitute.elo : game.player_white.elo }}
+                        </div>
+                        <div class="icon">
+                          <img src="assets/icons/{{ game.player_white_substitute ? 'robot' : 'person' }}.svg" alt="Ikona gracza" />
+                        </div>
+                      </div>
+
+                      <div class="player-info">
+                        <div class="username">
+                          {{ game.player_white.username }}
+                          <div class="flag">
+                            <img
+                              *ngIf="game.player_white.nationality"
+                              src="assets/flags/{{ game.player_white.nationality }}.svg"
+                              alt="Flaga"
+                              class="flag-icon"
+                            />
+                          </div>
+                        </div>
+                        <div *ngIf="game.player_white_substitute" class="substitute">
+                          Silnik: <span>{{ game.player_white_substitute.name }}</span>
+                        </div>
+                      </div>
+            
+                      <div class="vs-icon">
+                        <img src="assets/icons/swords-clashing.svg" alt="Ikona walki" />
+                      </div>
+            
+                      <div class="player-info">
+                        <div class="username">
+                          {{ game.player_black.username }}
+                          <div class="flag">
+                            <img
+                              *ngIf="game.player_black.nationality"
+                              src="assets/flags/{{ game.player_black.nationality }}.svg"
+                              alt="Flaga"
+                              class="flag-icon"
+                            />
+                          </div>
+                        </div>
+                        <div *ngIf="game.player_black_substitute" class="substitute">
+                          Silnik: <span>{{ game.player_black_substitute.name }}</span>
+                        </div>
+                      </div>
+
+                      <div class="player black">
+                        <div class="elo">
+                          {{ game.player_black_substitute ? game.player_black_substitute.elo : game.player_black.elo }}
+                        </div>
+                        <div class="icon">
+                          <img src="assets/icons/{{ game.player_black_substitute ? 'robot' : 'person' }}.svg" alt="Ikona gracza" />
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ng-container>
+                <ng-template #emptyGames>
+                  <div class="empty-message">
+                    <p>Brak gier do wyświetlenia.</p>
+                  </div>
+                </ng-template>
+              </ng-container>
+        
+              <ng-template #tournamentList>
+                <ng-container *ngIf="tournaments.length > 0; else emptyTournaments">
+                  <li *ngFor="let tournament of tournaments" class="tournament-card" [class.clickable]="listUsedForSpectating" 
+                      (click)="listUsedForSpectating ? joinTournament(tournament.tournament_id) : null">
+                    
+                    <div class="tournament-header">
+                      <div class="info-icon" title="Opis turnieju" (mouseover)="showTooltip = true" (mouseout)="showTooltip = false">
+                        <img src="assets/icons/info-circle.svg" alt="Informacja o turnieju" />
+                        <div *ngIf="showTooltip" class="tooltip">
+                          {{ tournament.description }}
+                        </div>
+                      </div>
+                      <div class="tournament-name">
+                        <span>{{ tournament.name }}: {{ tournament.is_ranked ? 'Rankingowy' : 'Towarzyski' }}, {{ tournament.format_data.time_format }}</span>
+                      </div>
+                      <div class="tournament-description">
+                        <div class="elo-restrictions">
+                          <div class="min-elo">Min ELO: {{ tournament.restrictions_data?.min_elo || 'Brak' }}</div>
+                          <div class="max-elo">Max ELO: {{ tournament.restrictions_data?.max_elo || 'Brak' }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="tournament-details">
+                      <div class="players-count">
+                        Liczba graczy: <span class="gold">{{ tournament.current_player_count }}</span><span *ngIf="!listUsedForSpectating" class="gold">/{{ tournament.player_count }}</span>
+                      </div>
+          
+                      <div class="tournament-icons">
+                        <div class="icon">
+                          <img src="assets/icons/{{ getPlayerModeIcon(tournament.format_data.player_mode, 'left') }}.svg" alt="Tryb gracza" />
+                        </div>
+                        <div class="vs-icon">
+                          <img src="assets/icons/swords-clashing.svg" alt="Ikona walki" />
+                        </div>
+                        <div class="icon">
+                          <img src="assets/icons/{{ getPlayerModeIcon(tournament.format_data.player_mode, 'right') }}.svg" alt="Tryb gracza" />
+                        </div>
+                      </div>
+
+                      <div *ngIf="!listUsedForSpectating" class="joining-player">
+                        <div class="player-icon">
+                          <span class="elo">
+                            {{ getJoiningPlayerIcon(tournament.format_data.player_mode) === 'robot' ? getSelectedEngineElo(tournament.tournament_id) : userProfile?.elo || '' }}
+                          </span>
+                          <div class="icon">
+                            <img src="assets/icons/{{ getJoiningPlayerIcon(tournament.format_data.player_mode) }}.svg" alt="Ikona dołączającego" />
+                          </div>
+                        </div>
+                        <select *ngIf="getJoiningPlayerIcon(tournament.format_data.player_mode) === 'robot'" [(ngModel)]="selectedEngineUrls[tournament.tournament_id]">
+                          <option *ngFor="let engine of acceptedEngines" [value]="engine.url">{{ engine.name }}</option>
+                        </select>
+                        <div class="join-button-container">
+                          <button 
+                            class="join-button" 
+                            (click)="joinTournament(tournament.tournament_id)" 
+                            [disabled]="isJoinDisabled(tournament)">
+                            Dołącz
+                          </button>
+                        </div>                        
+                      </div>
+                    </div>
+                  </li>
+                </ng-container>
+                <ng-template #emptyTournaments>
+                  <div class="empty-message">
+                    <p>Brak turniejów do wyświetlenia.</p>
+                  </div>
+                </ng-template>
+              </ng-template>
+            </ul>
+          </div>
+        </div>                   
+
+        <div class="pagination">
+          <button (click)="prevPage()">
+            <img src="assets/icons/arrow-left.svg" alt="Poprzednia strona" />
+          </button>
+          <span>Strona {{ currentPage }}</span>
+          <button (click)="nextPage()">
+            <img src="assets/icons/arrow-right.svg" alt="Następna strona" />
+          </button>
+        </div>        
+      </div>
+    </div>
+
+    <button class="filter-button" (click)="toggleFilterPanel()">
+      <span>{{ isFilterPanelOpen ? '❮' : '❯' }}</span>
+    </button>
+  </div>
+</div>

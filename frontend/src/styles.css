@@ -1,0 +1,64 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    background-image: url('/assets/images/background.jpg'); 
+    background-repeat: repeat;
+ 
+    background-size: auto; 
+    background-position: top left; 
+  }
+  
+  html, body {
+    height: 100%;
+  }
+
+
+input::placeholder,
+textarea::placeholder {
+  color: black; 
+  font-style: italic; 
+  opacity: 0.7; 
+}
+
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(148, 119, 76); 
+  box-shadow: inset 0px 0px 10px rgb(0, 0, 0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #13100d; 
+  border-radius: 5px;
+  box-shadow: inset 0px 0px 10px rgb(189, 170, 153)
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2c2718; 
+}
+
+.custom-slider {
+  .ngx-slider {
+    .ngx-slider-selection {
+      background: #4286a5 !important;
+    }
+
+    .ngx-slider-pointer {
+      background: #333333 !important;
+    }
+
+    .ngx-slider-pointer::after {
+      background: rgb(93, 99, 72) !important;
+    }
+
+    .ngx-slider-bubble {
+      color: #cccccc !important;
+    }
+  }
+}

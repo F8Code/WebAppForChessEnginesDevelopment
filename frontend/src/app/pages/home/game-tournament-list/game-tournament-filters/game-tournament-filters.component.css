@@ -1,0 +1,61 @@
+.filter-panel {
+    box-sizing:border-box;
+    width:100%;
+    height:100%;
+    max-width:280px;
+    max-height:100%;
+    text-align:center;
+    color:rgb(221,221,221);
+  }
+  .filter-group select {
+    width:95%;
+    padding:8px 12px;
+    font-size:14px;
+    color:#ffffff;
+    border:1px solid #6a6a6a;
+    border-radius:4px;
+    background-color:#333333;
+    box-sizing:border-box;
+    margin-bottom:5px;
+    margin-top:5px;
+    transition:background-color 0.3s ease,border-color 0.3s ease;
+  }
+  .filter-group select:hover {
+    background-color:#444444;
+    border-color:#4286a5;
+  }
+  .filter-group select:focus {
+    outline:none;
+    border-color:#4286a5;
+  }
+  .filter-group label {
+    font-size:15px;
+    color:#cccccc;
+    display:block;
+  }
+  .filter-group span {
+    font-size:15px;
+    color:#cccccc;
+    display:block;
+  }
+  .filter-panel button {
+    display:block;
+    width:100%;
+    padding:12px;
+    background-color:#4286a5;
+    color:white;
+    border:none;
+    border-radius:4px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:background-color 0.3s ease,box-shadow 0.2s ease;
+    margin-top:30px;
+  }
+  .filter-panel button:hover {
+    background-color:#44b8c7;
+  }
+  .filter-panel button:active {
+    background-color:#265d64;
+  }
+  

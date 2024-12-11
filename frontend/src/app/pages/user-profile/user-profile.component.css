@@ -1,0 +1,542 @@
+
+.profile-page {
+  position:relative;
+  width:calc(95vw);
+  max-width:1450px;
+  height:calc(100vh - 125px);
+  margin:10px auto;
+  padding:10px;
+  border:3px solid #312000;
+  border-radius:8px;
+  background-image:url('/assets/textures/wood-texture.jpg');
+  background-size:cover;
+  padding:10px;
+  isolation:isolate;
+  z-index:1;
+}
+.profile-page::before {
+  content:'';
+  position:absolute;
+  z-index:0;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgb(138,97,35);
+  mix-blend-mode:multiply;
+  pointer-events:none;
+}
+.profile-container {
+  position:relative;
+  margin:0 auto;
+  margin-bottom:10px;
+  padding:15px;
+  border:3px solid #312000;
+  border-radius:8px;
+  font-family:Arial,sans-serif;
+  display:flex;
+  flex-direction:column;
+  box-sizing:border-box;
+  background-image:url('/assets/textures/wood-texture.jpg');
+  background-size:cover;
+  z-index:3;
+}
+.profile-container::before {
+  content:'';
+  position:absolute;
+  z-index:2;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgb(197,155,85);
+  mix-blend-mode:multiply;
+  pointer-events:none;
+}
+.profile-row {
+  z-index:4;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+.user-info {
+  flex:0 0 25%;
+  text-align:center;
+  padding:5px;
+  border:3px solid #312000;
+  background:linear-gradient(to left,#6b5f3b,#8b7e54);
+  border-radius:8px;
+  box-shadow:inset 0px 0px 10px rgba(0,0,0,1);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.username {
+  font-size:28px;
+  font-weight:bold;
+  color:#e2e2e2;
+  margin-bottom:10px;
+  text-shadow:1px 1px 3px rgba(0,0,0,0.6);
+}
+.created_at,.elo {
+  font-size:18px;
+  color:#e2e2e2;
+  margin-bottom:10px;
+  font-weight:bold;
+}
+.created_at span,.elo span {
+  font-size:20px;
+  color:#d8b800;
+  font-weight:bold;
+}
+.form-container {
+  flex:1;
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  align-items:flex-start;
+}
+.form-group {
+  flex:1 1 calc(50% - 15px);
+  display:flex;
+  flex-direction:column;
+}
+.form-group label {
+  font-weight:bold;
+  font-size:14px;
+  margin-bottom:5px;
+  color:#333;
+}
+.form-group input,.form-group select {
+  width:100%;
+  padding:8px;
+  border:2px solid #312000;
+  border-radius:4px;
+  font-size:14px;
+  box-sizing:border-box;
+  background-color:rgb(119,126,91);
+  box-shadow:inset 0px 0px 5px rgba(0,0,0,0.5);
+}
+.save-button {
+  flex:1 1 100%;
+  padding:10px;
+  font-size:16px;
+  font-weight:bold;
+  background-color:#4286a5;
+  color:white;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  transition:background-color 0.3s ease;
+}
+.save-button:hover {
+  background-color:#44b8c7;
+}
+.save-button:disabled {
+  background-color:#3d3d3d;
+  cursor:not-allowed;
+}
+.profile-row {
+  gap:30px;
+}
+.user-info {
+  height:auto;
+}
+.form-container {
+  align-self:stretch;
+}
+.tabs-container {
+  display:flex;
+  justify-content:center;
+  margin-bottom:10px;
+  position:relative;
+  z-index:15;
+  transform:translateY(-123%);
+}
+.tab-button {
+  flex:1;
+  padding:15px;
+  background-color:#2c2718;
+  border:5px solid #312000;
+  border-bottom:none;
+  cursor:pointer;
+  font-size:16px;
+  font-weight:bold;
+  color:grey;
+  border-radius:15px 15px 0 0;
+  text-align:center;
+  position:relative;
+}
+.tab-button.active {
+  background-color:#4d452e;
+  color:white;
+}
+.tab-button:hover {
+  background-color:#645a3c;
+  color:white;
+}
+.list-container-wrapper {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  height:calc(100% - 305px);
+  margin-top:60px;
+  padding:10px;
+  border:3px solid #312000;
+  overflow:visible;
+  background-image:url('/assets/textures/wood-texture.jpg');
+  background-size:cover;
+  z-index:3;
+}
+.list-container-wrapper::before {
+  content:'';
+  position:absolute;
+  z-index:2;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgb(197,155,85);
+  mix-blend-mode:multiply;
+  pointer-events:none;
+}
+.list-container {
+  z-index:4;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  margin-top:-55px;
+  margin-bottom:33px;
+  border:2px solid #312000;
+  overflow:hidden;
+  background:linear-gradient(to top,rgb(93,99,72),rgb(140,148,107));
+  box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);
+}
+.scroll-area {
+  flex:1;
+  overflow-y:auto;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  overflow-x:hidden;
+}
+.game-card {
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:linear-gradient(to bottom,#444,#222);
+  border:1px solid #d8b800;
+  border-radius:8px;
+  padding:5px;
+  color:white;
+  box-shadow:0 4px 6px rgba(0,0,0,0.3);
+  cursor:pointer;
+  transition:transform 0.3s ease,box-shadow 0.3s ease;
+}
+.game-card:hover {
+  transform:scale(1.02);
+  box-shadow:0 6px 8px rgba(0,0,0,0.5);
+}
+.game-header {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  justify-content:space-between;
+  margin-bottom:5px;
+}
+.info-icon img {
+  width:20px;
+  height:20px;
+  cursor:pointer;
+  filter:invert();
+}
+.tooltip {
+  position:absolute;
+  background:#333;
+  color:#fff;
+  padding:5px;
+  border-radius:4px;
+  top:25px;
+  left:0;
+  opacity:0;
+  transition:opacity 0.3s ease;
+}
+.info-icon:hover .tooltip {
+  opacity:1;
+}
+.game-result {
+  position:relative;
+  font-weight:bold;
+  font-size:24px;
+  justify-self:center;
+}
+.game-description {
+  position:relative;
+  font-weight:bold;
+  font-size:20px;
+  justify-self:end;
+}
+.result {
+  font-weight:bold;
+  text-transform:uppercase;
+}
+.result.win {
+  color:green;
+}
+.result.loss {
+  color:red;
+}
+.result.draw {
+  color:yellow;
+}
+.game-details {
+  display:grid;
+  grid-template-columns:1fr 3fr auto 3fr 1fr;
+  align-items:center;
+  justify-items:center;
+  gap:10px;
+  margin-top:15px;
+}
+.game-details img {
+  width:40px;
+  height:40px;
+}
+.player .elo {
+  font-size:20px;
+  color:white;
+  position:relative;
+  top:-20px;
+  text-align:center;
+}
+.elo-change {
+  font-weight:bold;
+}
+.elo-change.positive {
+  color:green !important;
+}
+.elo-change.negative {
+  color:red !important;
+}
+.player-info {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  margin-bottom:10px;
+}
+.player-info .username {
+  display:flex;
+  font-size:20px;
+  font-weight:bold;
+  gap:5px;
+}
+.player-info .flag-icon {
+  width:auto;
+  height:20px;
+  margin-left:0;
+}
+.player-info .substitute {
+  margin-top:-10px;
+  font-size:14px;
+  color:lightgrey;
+}
+.vs-icon img,.icon img {
+  width:70px;
+  height:auto;
+  margin-top:-20px;
+  filter:invert();
+}
+.tournament-card {
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:linear-gradient(to bottom,#444,#222);
+  border:1px solid #ff8800;
+  border-radius:8px;
+  padding:5px;
+  color:white;
+  box-shadow:0 4px 6px rgba(0,0,0,0.3);
+  cursor:pointer;
+  transition:transform 0.3s ease,box-shadow 0.3s ease;
+}
+.tournament-card:hover {
+  transform:scale(1.02);
+  box-shadow:0 6px 8px rgba(0,0,0,0.5);
+}
+.tournament-header {
+  display:grid;
+  grid-template-columns:1fr 3fr 1fr;
+  align-items:space-between;
+  margin-bottom:5px;
+}
+.tournament-name {
+  position:relative;
+  font-weight:bold;
+  font-size:20px;
+  justify-self:center;
+}
+.tournament-name span.win {
+  color:green;
+}
+.tournament-name span.loss {
+  color:red;
+}
+.tournament-description {
+  position:relative;
+  font-weight:bold;
+  font-size:20px;
+  justify-self:end;
+}
+.info-icon img {
+  position:relative;
+  width:20px;
+  height:20px;
+  cursor:pointer;
+}
+.tooltip {
+  position:absolute;
+  background:#333;
+  color:#fff;
+  padding:5px;
+  border-radius:4px;
+  top:25px;
+  left:0;
+  opacity:0;
+  transition:opacity 0.3s ease;
+}
+.info-icon:hover .tooltip {
+  opacity:1;
+}
+.tournament-details {
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:15px;
+  margin-top:15px;
+}
+.players-count,.my-place {
+  color:lightgrey;
+  text-align:center;
+  font-size:32px;
+}
+.players-count .gold,.my-place .gold {
+  color:gold;
+}
+.tournament-icons {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.tournament-icons img {
+  width:70px;
+  height:auto;
+  margin-top:-10px;
+}
+.engine-card {
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background:linear-gradient(to bottom,#444,#222);
+  border:1px solid #ff3300;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 6px rgba(0,0,0,0.2);
+  transition:transform 0.2s,box-shadow 0.2s;
+  color:white;
+}
+.engine-card:hover {
+  transform:translateY(-5px);
+  box-shadow:0 6px 10px rgba(0,0,0,0.25);
+}
+.history-list {
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+.engine-header {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  align-items:center;
+  margin-bottom:15px;
+}
+.engine-name {
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  color:white;
+}
+.created-at {
+  text-align:right;
+  font-size:16px;
+  color:white;
+}
+.engine-details {
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:15px;
+  align-items:start;
+}
+.robot-icon img {
+  width:90px;
+  height:auto;
+  filter:invert()
+}
+.engine-info p {
+  margin:5px 0;
+  font-size:20px;
+  color:white;
+}
+.engine-info a {
+  color:#ffcc00;
+  text-decoration:none;
+}
+.engine-info a:hover {
+  text-decoration:underline;
+}
+.clickable {
+  cursor:pointer;
+}
+.clickable:hover {
+  transform:scale(1.02);
+  box-shadow:0 6px 10px rgba(0,0,0,0.2);
+}
+.pagination {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:absolute;
+  bottom:0;
+  left:0;
+  gap:15px;
+  width:100%;
+  padding:8px;
+  font-size:24px;
+}
+.pagination button {
+  background:#3d3d3d;
+  position:relative;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.pagination button img {
+  width:40px;
+  height:20px;
+  filter:invert(100%);
+  transition:transform 0.2s ease,filter 0.3s ease;
+}
+.pagination button:hover:enabled img {
+  transform:scale(1.2);
+}
+.pagination button:disabled img {
+  transform:scale(1.2);
+  filter:brightness(0)
+}
+.pagination button:hover:enabled {
+  background-color:#8ba8a5;
+}

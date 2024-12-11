@@ -1,0 +1,141 @@
+
+.game-container {
+  display:grid;
+  grid-template-columns:minmax(260px,30%) auto 300px;
+  height:calc(100vh - 50px);
+  gap:10px;
+  padding:15px;
+  gap:15px;
+  min-height:150px;
+  box-sizing:border-box;
+}
+.left-panel {
+  height:100%;
+  transition:all 0.3s ease;
+  min-height:150px;
+}
+@media (max-width:1200px) {
+  .left-panel {
+  display:none;
+}
+}@media (max-width:1200px) {
+  .game-container {
+  grid-template-columns:1fr 300px;
+}
+.chess-board {
+  width:90%;
+  max-width:90%;
+}
+}.board-container {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  height:100%;
+  box-sizing:border-box;
+  min-width:300px;
+  min-height:150px;
+  background-color:none;
+  position:relative;
+}
+.opponent-row,.player-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  height:50px;
+  width:100%;
+  background-color:#4d452e;
+  box-sizing:border-box;
+  padding:0 10px;
+  font-size:24px;
+  color:#ffebcd;
+  font-family:'Arial',sans-serif;
+  font-weight:bold;
+}
+.player-info {
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+}
+.player-clock {
+  font-size:30px;
+  color:#ffebcd;
+  font-family:'Arial',sans-serif;
+}
+.flag-icon {
+  width:24px;
+  height:24px;
+  margin-right:5px;
+  vertical-align:middle;
+}
+.chess-board {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  aspect-ratio:1;
+  max-height:calc(100% - 100px);
+  max-width:100%;
+}
+.chat-container {
+  position:relative;
+  height:100%;
+  border:3px solid #312000;
+  padding:10px;
+  box-sizing:border-box;
+  min-width:260px;
+  background-image:url('/assets/textures/wood-texture.jpg');
+  background-size:cover;
+}
+.chat-container::before {
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgb(138,97,35);
+  mix-blend-mode:multiply;
+  pointer-events:none;
+  z-index:0;
+}
+.right-panel {
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  width:300px;
+  margin-right:15px;
+  min-height:270px;
+}
+.move-list-container {
+  display:flex;
+  flex-direction:column;
+  flex-grow:1;
+  height:calc(100% - 80px);
+}
+.actions-container {
+  height:80px;
+  justify-content:center;
+  align-items:center;
+  padding:0;
+  box-sizing:border-box;
+}
+.exit-button-container {
+  grid-column:span 3;
+  text-align:center;
+  height:40px;
+}
+button {
+  box-shadow:inset 0px 0px 5px rgba(0,0,0,0.7);
+  width:100%;
+  height:100%;
+  background-color:#a54842;
+  color:white;
+  border:none;
+  cursor:pointer;
+  font-size:20px;
+  font-weight:bold;
+}
+button:hover {
+  background-color:#c74444;
+}

@@ -1,0 +1,125 @@
+
+.popup-overlay {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  background:rgba(0,0,0,0.5);
+  z-index:1000;
+  animation:fade-in 0.3s ease-out;
+}
+.popup-overlay.fade-out {
+  animation:fade-out 0.3s ease-out;
+}
+.popup {
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:450px;
+  background:linear-gradient(to bottom,#4d452e,#2c2718);
+  box-shadow:0 0 10px rgba(0,0,0,1);
+  padding:20px;
+  border:2px solid #6a6a6a;
+  border-radius:12px;
+  z-index:1010;
+  animation:popup-slide-in 0.3s ease-out;
+}
+.popup.fade-out {
+  animation:popup-slide-out 0.3s ease-out;
+}
+.popup h2 {
+  font-size:24px;
+  margin-top:10px;
+  margin-bottom:20px;
+  text-align:center;
+  color:#ffffff;
+}
+.popup .form-group {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+.popup .form-group label {
+  font-size:16px;
+  color:#dcdcdc;
+  margin-right:10px;
+  flex:1;
+  text-align:left;
+}
+.popup .form-group input[type="text"],.popup .form-group select,.popup .form-group textarea {
+  flex:1;
+  padding:8px;
+  background-color:#2a2a2a;
+  border:1px solid #6a6a6a;
+  border-radius:4px;
+  color:#ffffff;
+  font-size:14px;
+  text-align:right;
+  transition:border-color 0.3s ease,background-color 0.3s ease;
+}
+.popup .form-group span {
+  color:#ffffff;
+}
+.popup .form-group select:hover,.popup .form-group textarea:hover,.popup .form-group input[type="text"]:hover,.popup .form-group select:focus,.popup .form-group textarea:focus,.popup .form-group input[type="text"]:focus {
+  background:#44b8c7;
+  border-color:#44b8c7;
+  background-color:#3a3a3a;
+  outline:none;
+}
+.popup button {
+  width:100%;
+  padding:12px;
+  margin-top:20px;
+  font-size:16px;
+  font-weight:bold;
+  color:#ffffff;
+  background-color:#44b8c7;
+  border:2px solid #6a6a6a;
+  border-radius:8px;
+  cursor:pointer;
+  transition:background-color 0.3s ease,box-shadow 0.2s ease;
+}
+.popup button:hover {
+  background-color:#44b8c7;
+  box-shadow:0 4px 8px rgba(0,0,0,0.3);
+}
+.popup button:disabled {
+  background-color:#6a6a6a;
+  cursor:not-allowed;
+}
+@keyframes fade-in {
+  from {
+  opacity:0;
+}
+to {
+  opacity:1;
+}
+}@keyframes fade-out {
+  from {
+  opacity:1;
+}
+to {
+  opacity:0;
+}
+}@keyframes popup-slide-in {
+  from {
+  transform:translate(-50%,-60%);
+  opacity:0;
+}
+to {
+  transform:translate(-50%,-50%);
+  opacity:1;
+}
+}@keyframes popup-slide-out {
+  from {
+  transform:translate(-50%,-50%);
+  opacity:1;
+}
+to {
+  transform:translate(-50%,-60%);
+  opacity:0;
+}
+}
