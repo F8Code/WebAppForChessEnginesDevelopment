@@ -259,20 +259,35 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
 
-        from .models import TournamentParticipant
-        is_participant = await sync_to_async(
-            TournamentParticipant.objects.filter(
-                tournament_id=self.tournament_id,
-                player__username=self.username
-            ).exists
-        )()
-        if not is_participant:
+        from .models import TournamentParticipant, Tournament
+        tournament = await sync_to_async(Tournament.objects.get)(tournament_id=self.tournament_id)
+        
+        if tournament.start_time is not None:
+            return
+        
+        async def wait_for_participant():
+            for _ in range(10):
+                is_participant = await sync_to_async(
+                    lambda: TournamentParticipant.objects.filter(
+                        tournament_id=self.tournament_id,
+                        player__username=self.username
+                    ).exists()
+                )()
+                if is_participant:
+                    return True
+                await asyncio.sleep(1)
+            return False
+        
+        participant_exists = await wait_for_participant()
+        if not participant_exists:
             return
 
         from .managers import TournamentManager
         manager = await TournamentManager.get_or_create(self.tournament_id)
+        print(f"{self.tournament_id}, is manager: {manager is not None}")
         if(manager is not None):
             participant_usernames = await sync_to_async(lambda: [str(p.player.username) for p in manager.participants])()
+            print(f"{self.tournament_id}, is added: {self.username in participant_usernames}")
             if self.username not in participant_usernames:
                 await manager.player_join(self.username)
                 await manager.log_server_message('player_joined', self.username)
