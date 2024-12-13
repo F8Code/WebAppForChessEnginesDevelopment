@@ -5,7 +5,6 @@ class User(models.Model):
     user_id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField()
     username = models.OneToOneField(AuthUser, to_field='username', on_delete=models.CASCADE)
-    is_online = models.BooleanField(default=True)
     name = models.CharField(max_length=20, null=True)
     surname = models.CharField(max_length=20, null=True)
     nationality = models.CharField(max_length=30, null=True)

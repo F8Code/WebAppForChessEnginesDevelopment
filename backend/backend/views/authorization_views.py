@@ -29,7 +29,6 @@ def register(request):
         User.objects.create(
             username=auth_user,
             created_at=datetime.now(),
-            is_online=True,
             elo=1000
         )
 

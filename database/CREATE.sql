@@ -2,7 +2,6 @@ CREATE TABLE Users (
     user_id SERIAL PRIMARY KEY,
     created_at TIMESTAMP NOT NULL,
     username_id VARCHAR(20) NOT NULL UNIQUE,
-    is_online BOOLEAN DEFAULT TRUE NOT NULL,
     name VARCHAR(20),
     surname VARCHAR(20),
     nationality VARCHAR(30),
