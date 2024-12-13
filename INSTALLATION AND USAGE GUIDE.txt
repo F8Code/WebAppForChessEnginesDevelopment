@@ -15,9 +15,10 @@ INSTALLATION
 	# Note: Due to Django's limitations with composite keys, setting up the database requires a combination of SQL scripts and Django migration commands.
 	3.1 pgAdmin setup
 		3.1.1 Open your browser and go to pgAdmin located at: http://localhost:8001
-		3.1.2 In pgAdmin, click on the "Add New Server" button.
-		3.1.3 In the General tab, enter any name you prefer.
-		3.1.4 In the Connection tab, use the following settings:
+		3.1.2 Log into pgAdmin using email: 'admin@example.com', and password 'password'
+		3.1.3 In pgAdmin, click on the "Add New Server" button.
+		3.1.4 In the General tab, enter any name you prefer.
+		3.1.5 In the Connection tab, use the following settings:
 			Host name: postgres_db
 			Port: 5432
 			Maintenance database: postgres
