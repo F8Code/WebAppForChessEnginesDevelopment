@@ -1,6 +1,28 @@
 from .data_structures import NotationInfo, DrawType, ChessPiece, ChessFigure, MoveInfo
 import copy, math
 
+def simulate_move(chess_board, is_white, notation_info):
+    chess_board[notation_info.target_x][notation_info.target_y] = chess_board[notation_info.source_x][notation_info.source_y]
+    chess_board[notation_info.source_x][notation_info.source_y] = None
+
+    if notation_info.is_l_castling:
+        # Long castling
+        if is_white:
+            chess_board[3][7] = chess_board[0][7]
+            chess_board[0][7] = None
+        else:
+            chess_board[3][0] = chess_board[0][0]
+            chess_board[0][0] = None
+    elif notation_info.is_s_castling:
+        # Short castling
+        if is_white:
+            chess_board[5][7] = chess_board[7][7]
+            chess_board[7][7] = None
+        else:
+            chess_board[5][0] = chess_board[7][0]
+            chess_board[7][0] = None
+            
+
 def retrieve_basic_notation_information(notation_info, move_info):
     # Copying basic move information (coordinates, promotion, etc.)
     notation_info.source_x = move_info.source_x
@@ -41,25 +63,7 @@ def retrieve_basic_notation_information(notation_info, move_info):
 
     # Copying the board state after the move into NotationInfo
     notation_info.chess_board = copy.deepcopy(move_info.chess_board)
-    notation_info.chess_board[notation_info.target_x][notation_info.target_y] = notation_info.chess_board[notation_info.source_x][notation_info.source_y]
-    notation_info.chess_board[notation_info.source_x][notation_info.source_y] = None
-
-    if notation_info.is_l_castling:
-        # Long castling
-        if move_info.source_piece.is_white:
-            notation_info.chess_board[3][7] = notation_info.chess_board[0][7]
-            notation_info.chess_board[0][7] = None
-        else:
-            notation_info.chess_board[3][0] = notation_info.chess_board[0][0]
-            notation_info.chess_board[0][0] = None
-    elif notation_info.is_s_castling:
-        # Short castling
-        if move_info.source_piece.is_white:
-            notation_info.chess_board[5][7] = notation_info.chess_board[7][7]
-            notation_info.chess_board[7][7] = None
-        else:
-            notation_info.chess_board[5][0] = notation_info.chess_board[7][0]
-            notation_info.chess_board[7][0] = None
+    simulate_move(notation_info.chess_board, move_info.source_piece.is_white, notation_info)
 
 
 def retrieve_castling_notation_information(notation_info, move_info):
@@ -99,8 +103,8 @@ def retrieve_castling_notation_information(notation_info, move_info):
 
 async def retrieve_complex_notation_information(game_id, notation_info, move_info, fen_notation_move):
     simulated_move_info = copy.deepcopy(move_info)  # Simulating the move for retrieving additional information
-    simulated_move_info.chess_board[move_info.target_x][move_info.target_y] = move_info.chess_board[move_info.source_x][move_info.source_y]
-    simulated_move_info.chess_board[move_info.source_x][move_info.source_y] = None
+    simulate_move(simulated_move_info.chess_board, move_info.source_piece.is_white, notation_info)
+
     if(simulated_move_info.promoted_to is not None):
         simulated_move_info.chess_board[move_info.target_x][move_info.target_y].type = simulated_move_info.promoted_to
     simulated_move_info.white_turn = not move_info.white_turn
@@ -115,7 +119,7 @@ def retrieve_checkmate_information(notation_info, move_info):
     # Checking how many opponents attack the king
 
     king_position = get_king_position(move_info, move_info.white_turn)
-    attackers = get_pieces_that_can_go_to_square(king_position[0], king_position[1], move_info, not move_info.white_turn)
+    attackers = get_pieces_that_can_go_to_square(king_position[0], king_position[1], move_info, not move_info.white_turn, False)
 
     if len(attackers) == 0:
         return
@@ -131,7 +135,7 @@ def retrieve_checkmate_information(notation_info, move_info):
     for i in range(8):
         move_info.target_x = king_position[0] + directions_x[i]
         move_info.target_y = king_position[1] + directions_y[i]
-        if is_move_valid_function(move_info, True, True, False):
+        if is_move_valid_function(move_info, True, False, False):
             return
 
     # If the king is under double attack and cannot escape, it is checkmate
@@ -140,10 +144,10 @@ def retrieve_checkmate_information(notation_info, move_info):
         return
 
     attacker = move_info.chess_board[attackers[0][0]][attackers[0][1]]
-    
+
     if attacker.type == ChessPiece.Knight:
         # If the attacker is a knight, check if it can be captured
-        if len(get_pieces_that_can_valid_go_to_square(attackers[0][0], attackers[0][1], move_info, move_info.white_turn)) > 0:
+        if len(get_pieces_that_can_go_to_square(attackers[0][0], attackers[0][1], move_info, move_info.white_turn, True)) > 0:
             return
     else:
         # Checking if the attacking piece can be captured or blocked
@@ -152,29 +156,10 @@ def retrieve_checkmate_information(notation_info, move_info):
         for i in range(1, max(abs(attack_distance_x), abs(attack_distance_y)) + 1):
             target_x = king_position[0] + i * (1 if attack_distance_x > 0 else -1 if attack_distance_x < 0 else 0)
             target_y = king_position[1] + i * (1 if attack_distance_y > 0 else -1 if attack_distance_y < 0 else 0)
-            if len(get_pieces_that_can_valid_go_to_square(target_x, target_y, move_info, move_info.white_turn)) > 0:
+            if len(get_pieces_that_can_go_to_square(target_x, target_y, move_info, move_info.white_turn, True)) > 0:
                 return
 
     notation_info.is_checkmate = True
-
-
-def get_pieces_that_can_valid_go_to_square(target_x, target_y, move_info, for_white):
-    from .move_validation_algorithms import is_move_valid_function
-    pieces_that_can_move = []
-    
-    for x in range(8):
-        for y in range(8):
-            piece = move_info.chess_board[x][y]
-            if piece and piece.is_white == for_white:
-                simulated_move_info = copy.deepcopy(move_info)
-                simulated_move_info.source_x = x
-                simulated_move_info.source_y = y
-                simulated_move_info.target_x = target_x
-                simulated_move_info.target_y = target_y
-                if is_move_valid_function(simulated_move_info, True, False, False):
-                    pieces_that_can_move.append((x, y))
-
-    return pieces_that_can_move
 
 
 async def retrieve_draw_information(game_id, notation_info, move_info, fen_notation_move):
@@ -199,11 +184,10 @@ def retrieve_fifty_move_rule_information(notation_info, move_info):
 
 
 def retrieve_stalemate_information(notation_info, move_info):
-    from .move_validation_algorithms import is_move_valid_function, get_king_position, get_pieces_that_can_go_to_square
+    from .move_validation_algorithms import is_move_valid_function
 
-    # Checking if the king is under attack
-    king_position = get_king_position(move_info, move_info.white_turn)
-    if len(get_pieces_that_can_go_to_square(king_position[0], king_position[1], move_info, not move_info.white_turn)) > 0:
+    # If the king is attacked stalemate does not occur
+    if notation_info.is_check:
         return
     
     move_directions = {
@@ -216,17 +200,18 @@ def retrieve_stalemate_information(notation_info, move_info):
     }
 
     # Checking if any piece can make a move
+    simulated_move_info = copy.deepcopy(move_info)
     for i in range(8):
         for j in range(8):
-            piece = move_info.chess_board[i][j]
-            if piece and piece.is_white == move_info.white_turn:
+            piece = simulated_move_info.chess_board[i][j]
+            if piece and piece.is_white == simulated_move_info.white_turn:
                 directions = move_directions[piece.type]
                 for direction_x, direction_y in directions:
-                    move_info.source_x = i
-                    move_info.source_y = j
-                    move_info.target_x = i + direction_x
-                    move_info.target_y = j + direction_y
-                    if is_move_valid_function(move_info, True, False, False):
+                    simulated_move_info.source_x = i
+                    simulated_move_info.source_y = j
+                    simulated_move_info.target_x = i + direction_x
+                    simulated_move_info.target_y = j + direction_y
+                    if is_move_valid_function(simulated_move_info, True, False, False):
                         return
                       
     notation_info.draw_type = DrawType.Stalemate
@@ -245,6 +230,7 @@ def retrieve_insufficient_material_information(notation_info, move_info):
                 else:
                     black_pieces.append(piece)
 
+    # There is enough material on the board to continue the game
     if len(white_pieces) >= 2 or len(black_pieces) >= 2:
         return
 
@@ -257,7 +243,6 @@ def retrieve_insufficient_material_information(notation_info, move_info):
     if len(white_pieces) == 1 and (white_pieces[0].type == ChessPiece.Knight or white_pieces[0].type == ChessPiece.Bishop):
         notation_info.draw_type = DrawType.InsufficientMaterial
         return
-
     if len(black_pieces) == 1 and (black_pieces[0].type == ChessPiece.Knight or black_pieces[0].type == ChessPiece.Bishop):
         notation_info.draw_type = DrawType.InsufficientMaterial
         return

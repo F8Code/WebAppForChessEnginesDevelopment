@@ -69,35 +69,36 @@ def does_follow_movement_rules(move_info):
 
 
 def does_move_expose_king(move_info):
+    # Simulate the move
     simulated_move_info = copy.deepcopy(move_info)
     simulated_move_info.chess_board[move_info.target_x][move_info.target_y] = move_info.chess_board[move_info.source_x][move_info.source_y]
     simulated_move_info.chess_board[move_info.source_x][move_info.source_y] = None
 
+    # If the king has moved, verify his safety after the move
     if move_info.source_piece.type == ChessPiece.King:
-        return len(get_pieces_that_can_go_to_square(move_info.target_x, move_info.target_y, simulated_move_info, not move_info.white_turn)) != 0
+        return len(get_pieces_that_can_go_to_square(move_info.target_x, move_info.target_y, simulated_move_info, not move_info.white_turn, False)) != 0
 
     # If another piece has moved, check if it exposed the king
     king_position = get_king_position(simulated_move_info, move_info.white_turn)
-    return len(get_pieces_that_can_go_to_square(king_position[0], king_position[1], simulated_move_info, not move_info.white_turn)) != 0
+    return len(get_pieces_that_can_go_to_square(king_position[0], king_position[1], simulated_move_info, not move_info.white_turn, False)) != 0
         
 
-def get_pieces_that_can_go_to_square(target_x, target_y, move_info, for_white):
-    pieces_positions = []
+def get_pieces_that_can_go_to_square(target_x, target_y, move_info, for_white, validate_king_safety):
+    pieces_that_can_move = []
 
+    simulated_move_info = copy.deepcopy(move_info)
     for x in range(8):
         for y in range(8):
             piece = move_info.chess_board[x][y]
             if piece is not None and piece.is_white == for_white:
-                simulated_move_info = copy.deepcopy(move_info)
                 simulated_move_info.source_x = x
                 simulated_move_info.source_y = y
                 simulated_move_info.target_x = target_x
                 simulated_move_info.target_y = target_y
+                if is_move_valid_function(simulated_move_info, validate_king_safety, False, False):
+                    pieces_that_can_move.append((x, y))
 
-                if is_move_valid_function(simulated_move_info, False, False, False):
-                    pieces_positions.append((x, y))
-
-    return pieces_positions
+    return pieces_that_can_move
 
 
 def get_king_position(move_info, for_white):
@@ -116,8 +117,8 @@ def is_castling_valid(move_info):
             return False
 
     # Scan castling squares for attacks. The last castling square is scanned by the DoesMoveExposeKing function that's nested inside the validation function.
-    if len(get_pieces_that_can_go_to_square(move_info.source_x, move_info.source_y, move_info, not move_info.white_turn)) == 0 and \
-       len(get_pieces_that_can_go_to_square(move_info.source_x + move_info.direction_x, move_info.source_y, move_info, not move_info.white_turn)) == 0:
+    if len(get_pieces_that_can_go_to_square(move_info.source_x, move_info.source_y, move_info, not move_info.white_turn, False)) == 0 and \
+       len(get_pieces_that_can_go_to_square(move_info.source_x + move_info.direction_x, move_info.source_y, move_info, not move_info.white_turn, False)) == 0:
         return True
 
     return False

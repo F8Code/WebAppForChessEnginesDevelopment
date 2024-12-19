@@ -1,5 +1,5 @@
 from .data_structures import ChessPiece, ChessFigure, NotationInfo, MoveInfo
-from .post_validation_notation_data_algorithms import retrieve_basic_notation_information, retrieve_complex_notation_information, get_pieces_that_can_valid_go_to_square
+from .post_validation_notation_data_algorithms import retrieve_basic_notation_information, retrieve_complex_notation_information
 
 async def process_move_result(game_id, move_info):
     notation_info = NotationInfo()
@@ -138,7 +138,8 @@ def write_algebraic_notation(notation_info, move_info):
 
 
 def get_move_disambiguation(move_info):
-    ambiguous_pieces = get_pieces_that_can_valid_go_to_square(move_info.target_x, move_info.target_y, move_info, move_info.white_turn)
+    from .move_validation_algorithms import get_pieces_that_can_go_to_square
+    ambiguous_pieces = get_pieces_that_can_go_to_square(move_info.target_x, move_info.target_y, move_info, move_info.white_turn, True)
 
     ambiguous_pieces = [
         p for p in ambiguous_pieces 
