@@ -1,14 +1,14 @@
-##Main page
+Main page
 ![](screenshots/HOME.png)
-##Tournament awaiting for start page
+Tournament awaiting for start page
 ![](screenshots/TOURNAMENT_AWAITING.png)
-##Ongoing tournament page
+Ongoing tournament page
 ![](screenshots/TOURNAMENT_ONGOING.png)
-##Chess game page
+Chess game page
 ![](screenshots/GAME.png)
-##User profile page
+User profile page
 ![](screenshots/PROFILE.png)
-##Engine management page
+Engine management page
 ![](screenshots/ENGINES.png)
-##Info page
+Info page
 ![](screenshots/INFO.png)
