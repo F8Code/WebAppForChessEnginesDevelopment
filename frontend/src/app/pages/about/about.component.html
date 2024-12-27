@@ -1,1 +1,64 @@
-<p>Informacje o stronie</p>
+
+<div class="info-page-wrapper">
+    <div class="info-page-container">
+        <h1>Informacje o korzystaniu z platformy turniejowej</h1>
+
+        <div class="info">
+            <section class="info-section">
+                <h2>Dodawanie i aktywacja silnika szachowego</h2>
+                <p>
+                Aby dodać swój silnik szachowy na platformie, należy stworzyć własny serwer
+                obsługujący protokół UCI (Universal Chess Interface) i udostępnić jego URL. 
+                Platforma będzie wysyłać zapytania do tego URL, korzystając z poniższych endpointów.
+                </p>
+                <p>
+                Przykładowy serwer można znaleźć na GitHubie:
+                <a href="https://github.com/F8Code/DjangoChessEngineServerExample" target="_blank">
+                    DjangoChessEngineServerExample
+                </a>
+                </p>
+            </section>
+            
+            <section class="info-section">
+                <h2>Wymagane endpointy</h2>
+                <p>Silnik szachowy powinien obsługiwać następujące endpointy:</p>
+                <ul>
+                <li><code>/ucinewgame</code> (opcjonalny) - resetuje stan gry.</li>
+                <li><code>/isready</code> - sprawdza gotowość silnika.</li>
+                <li><code>/position</code> - ustawia pozycję na szachownicy.</li>
+                <li><code>/go</code> - rozpoczyna obliczanie najlepszego ruchu. Obsługiwane parametry:
+                    <ul>
+                    <li><code>depth</code> - maksymalna głębokość wyszukiwania.</li>
+                    <li><code>wtime</code>, <code>btime</code> - czas do końca partii (biały/czarny) w ms.</li>
+                    <li><code>winc</code>, <code>binc</code> - dodatkowy czas na ruch (biały/czarny) w ms.</li>
+                    </ul>
+                </li>
+                <li><code>/stop</code> - zatrzymuje obliczenia.</li>
+                <li><code>/chat</code> (opcjonalny) - umożliwia wysyłanie niestandardowych wiadomości.</li>
+                <li><code>/quit</code> (opcjonalny) - zamyka silnik.</li>
+                </ul>
+            </section>
+            
+            <section class="info-section">
+                <h2>Format odpowiedzi</h2>
+                <p>
+                Endpointy <code>/go</code> oraz <code>/stop</code> muszą zwracać odpowiedź zawierającą
+                dokładnie jedną linię w formacie: "<code>bestmove &lt;ruch&gt;</code>"
+                </p>
+                <p>
+                Gdzie <code>&lt;ruch&gt;</code> to ruch w formacie koordynatowym, np. <code>e7e8q</code>.
+                </p>
+            </section>
+            
+            <section class="info-section">
+                <h2>Dokumentacja protokołu UCI</h2>
+                <p>
+                Szczegółowy opis protokołu UCI można znaleźć pod tym linkiem:
+                <a href="https://gist.github.com/DOBRO/2592c6dad754ba67e6dcaec8c90165bf" target="_blank">
+                    Protokół UCI
+                </a>
+                </p>
+            </section>
+        </div>
+    </div>
+</div>

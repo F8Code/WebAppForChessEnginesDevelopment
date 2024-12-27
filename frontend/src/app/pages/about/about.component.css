@@ -1,0 +1,104 @@
+.info-page-wrapper {
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    border-radius:10px;
+    padding:10px;
+    position:relative;
+    overflow:hidden;
+    box-sizing:border-box;
+    border:3px solid #312000;
+    margin-top:25px;
+    margin-left:10px;
+    width:calc(100% - 30px);
+    height: calc(100% - 100px);
+    background-image:url('/assets/textures/wood-texture.jpg');
+    background-size:cover;
+    z-index:1;
+    overflow:visible;
+  }
+  .info-page-wrapper::before {
+    content:'';
+    position:absolute;
+    z-index:0;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-color:rgb(138,97,35);
+    mix-blend-mode:multiply;
+    pointer-events:none;
+  }
+  .info-page-container {
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    position:relative;
+    overflow:hidden;
+    box-sizing:border-box;
+    border:3px solid #312000;
+    background-image:url('/assets/textures/wood-texture.jpg');
+    background-size:cover;
+    z-index:3;
+    overflow:visible;
+    padding:10px;
+  }
+  .info-page-container::before {
+    content:'';
+    position:absolute;
+    z-index:2;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-color:rgb(197,155,85);
+    mix-blend-mode:multiply;
+    pointer-events:none;
+  }
+  .info-page-container h1 {
+    font-weight: bold;
+    text-align: center;
+    margin-top:5px;
+    margin-bottom:10px;
+  }
+  .info {
+    height:100%;
+    padding-left:10px;
+    overflow-y:auto;
+    border:2px solid #312000;
+    background:linear-gradient(to top,rgb(93,99,72),rgb(140,148,107));
+    box-shadow:inset 0px 0px 10px rgba(0,0,0,0.3);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    z-index:4;
+  }
+
+  .info-section {
+    margin-bottom: 0px;
+    margin-top: 0px;
+  }
+
+  .info-section h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .info-section p, .info-section ul, .info-section pre {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 2px;
+  }
+
+  .info-section code {
+    color: rgb(212, 138, 0);
+  }
+
+  a {
+    color: #0400e0;
+    text-decoration: underline;
+  }
+
+  a:hover {
+    color: #9800ac;
+  }

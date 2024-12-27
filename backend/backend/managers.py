@@ -292,7 +292,6 @@ class GameManager:
                     ).count()
                 return 0
 
-
             white_games_played = await sync_to_async(lambda: get_games_played(white_target))()
             black_games_played = await sync_to_async(lambda: get_games_played(black_target))()
 
