@@ -159,6 +159,7 @@ class GameManager:
             'draw_accept': f'Serwer|Gracz {username} zaakceptował remis.',
             'takeback_offer': f'Serwer|Gracz {username} proponuje cofnięcie ruchu.',
             'takeback_accept': f'Serwer|Gracz {username} zaakceptował cofnięcie ruchu.',
+            'engine_error': f'Serwer|Silnik gracza {username} trzykrotnie podał niepoprawny ruch.',
         }
 
         custom_result_messages = {
@@ -166,6 +167,7 @@ class GameManager:
             'Resignation': f"Serwer|Koniec gry - Gracz {username} wygrywa przez poddanie się przeciwnika",
             'Timeout': f"Serwer|Koniec gry - Gracz {username} wygrywa przez upłynięcie czasu przeciwnika",
             'Disconnection': f"Serwer|Koniec gry - Gracz {username} wygrywa przez rozłączenie się przeciwnika",
+            'EngineError': f"Serwer|Koniec gry - Gracz {username} wygrywa z powodu awarii silnika przeciwnika.",
             'Stalemate': "Serwer|Koniec gry - Remis z powodu braku legalnych ruchów (pat).",
             'Draw Agreement': "Serwer|Koniec gry - Remis przez obopólną zgodę graczy.",
             'Insufficient Material': "Serwer|Koniec gry - Remis przez niewystarczający materiał.",
@@ -248,7 +250,7 @@ class GameManager:
             case 'Checkmate' if fen_position:
                 winner = player_black_username if fen_position.split(' ')[1] == 'w' else player_white_username
                 return f"{'0-1' if fen_position.split(' ')[1] == 'w' else '1-0'}, Checkmate", winner
-            case 'Resignation' | 'Disconnection':
+            case 'Resignation' | 'Disconnection' | 'EngineError':
                 winner = player_black_username if username == player_white_username else player_white_username
                 return f"{'0-1' if username == player_white_username else '1-0'}, {end_type}", winner
             case 'Timeout':

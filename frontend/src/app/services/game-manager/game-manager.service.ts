@@ -208,6 +208,7 @@ export class GameManagerService {
       case 'draw_accept':
       case 'opponent_resigned':
       case 'opponent_disconnected':
+      case 'engine_error':
         if(this.isGameActive) {
           audio = new Audio('/assets/sounds/chess-sounds/start-end.mp3');
           audio.play().catch((error) => {console.error('Error playing sound:', error);});
@@ -219,6 +220,7 @@ export class GameManagerService {
         this.gameState.currentMove.sanMove = null;
         this.gameState.isPlayerTurn = !this.gameState.isPlayerTurn;
         this.gameStateSubject.next(this.gameState);
+        this.checkIfEngineShouldMove();
         break;
       case 'game_started':
         audio = new Audio('/assets/sounds/chess-sounds/start-end.mp3');
@@ -256,7 +258,7 @@ export class GameManagerService {
     );
   
     if (!engineMove) {
-      console.log("Engine failed to generate a valid move.");
+      this.sendMessage(this.gameId, { type: 'engine_error', game_id: this.gameId });
       return;
     }
 
@@ -278,19 +280,6 @@ export class GameManagerService {
       throw error;
     }
   }
-
-  async sendTournamentGameResult(gameId: number, tournamentId: number, formattedResult: string): Promise<any> {
-    const body = {
-      type: 'game_result',
-      tournament_id: tournamentId,  
-      game_id: gameId,     
-      result: formattedResult,
-      player1: this.gameDetails.player_white.username,
-      player2: this.gameDetails.player_black.username,
-    };
-
-    await this.tournamentManagerService.sendMessage(tournamentId, body);
-  }
   
   async sendMessage(gameId: number, message: WebSocketMessage): Promise<void> {
     try {
@@ -305,13 +294,14 @@ export class GameManagerService {
           this.gameStateSubject.next(this.gameState);
           if(message.end_type)
             this.isGameActive = false;
-        } else if (message.type == 'opponent_resigned' || message.type == 'draw_accept') {
+        } else if (message.type == 'opponent_resigned' || message.type == 'draw_accept' || message.type == 'engine_error') {
           this.isGameActive = false;
         } else if (message.type == 'takeback_accept') {
           this.gameState.currentMove.coordinateMove = null;
           this.gameState.currentMove.sanMove = null;
           this.gameState.isPlayerTurn = !this.gameState.isPlayerTurn;
           this.gameStateSubject.next(this.gameState);
+          this.checkIfEngineShouldMove();
         }
       } else {
         console.log(`WebSocket is not connected for game ${gameId}.`);

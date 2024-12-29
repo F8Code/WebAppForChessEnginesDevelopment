@@ -24,18 +24,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         from .models import Game
         is_player = await sync_to_async(
-            Game.objects.filter(
-                game_id=self.game_id
-            ).filter(
-                player_white__username=self.username
-            ).exists
-        )() or await sync_to_async(
-            Game.objects.filter(
-                game_id=self.game_id
-            ).filter(
-                player_black__username=self.username
-            ).exists
-        )()
+            Game.objects.filter(game_id=self.game_id).filter(player_white__username=self.username).exists)() or await sync_to_async(
+            Game.objects.filter(game_id=self.game_id).filter(player_black__username=self.username).exists)()
         if not is_player:
             return
 
@@ -124,7 +114,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                         await manager.update_game_status(end_type, fen_position)
                 
             elif message_type in ['opponent_joined', 'opponent_resigned','draw_offer', 'opponent_disconnected',
-                                  'draw_accept', 'takeback_offer', 'takeback_accept', 'game_started']:  
+                                  'draw_accept', 'takeback_offer', 'takeback_accept', 'game_started', 'engine_error']:  
                 await self.channel_layer.group_send(
                     self.game_group_name,
                     {
@@ -144,6 +134,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                     await manager.update_game_status('Agreement', None, self.username)
                 elif(message_type == 'opponent_disconnected'):
                     await manager.update_game_status('Disconnection', None, self.username)
+                elif(message_type == 'engine_error'):
+                    await manager.update_game_status('EngineError', None, self.username)
                     
             elif message_type == 'chat_update':
                 await self.channel_layer.group_send(
@@ -200,6 +192,13 @@ class GameConsumer(AsyncWebsocketConsumer):
         if event['sender_channel_name'] != self.channel_name:
             await self.send(text_data=json.dumps({
                 'type': 'opponent_disconnected',
+                'game_id': event['game_id'],
+            }))
+
+    async def engine_error(self, event):
+        if event['sender_channel_name'] != self.channel_name:
+            await self.send(text_data=json.dumps({
+                'type': 'engine_error',
                 'game_id': event['game_id'],
             }))
 
