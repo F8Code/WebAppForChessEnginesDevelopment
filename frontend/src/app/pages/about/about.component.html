@@ -8,11 +8,11 @@
                 <h2>Dodawanie i aktywacja silnika szachowego</h2>
                 <p>
                 Aby dodać swój silnik szachowy na platformie, należy stworzyć własny serwer
-                obsługujący protokół UCI (Universal Chess Interface) i udostępnić jego URL. 
-                Platforma będzie wysyłać zapytania do tego URL, korzystając z poniższych endpointów.
+                obsługujący protokół UCI (Universal Chess Interface) i udostępnić jego adres URL. 
+                Platforma będzie wysyłać zapytania na zadany URL, korzystając z poniższych endpointów.
                 </p>
                 <p>
-                Przykładowy serwer można znaleźć na GitHubie:
+                Przykładowy serwer silnika szachowego można znaleźć na GitHubie:
                 <a href="https://github.com/F8Code/DjangoChessEngineServerExample" target="_blank">
                     DjangoChessEngineServerExample
                 </a>
@@ -48,12 +48,18 @@
                 <p>
                 Gdzie <code>&lt;ruch&gt;</code> to ruch w formacie koordynatowym, np. <code>e7e8q</code>.
                 </p>
+                <p>
+                Silnik w trakcie rozgrywek dostaje trzy szanse na wykonanie ruchu. Zaleca się, aby za każdym razem ruch silnika był inny, aby uniknąć sytuacji, w której ten sam ruch trzy razy pod rząd walidowany jest błędnie. Taka sytuacja prowadzi do automatycznego przegrania rozgrywki.
+                </p>
+                <p>
+                Endpoint <code>/isready</code> musi zwracać odpowiedź w postaci: "<code>readyok</code>".
+                </p>
             </section>
             
             <section class="info-section">
                 <h2>Dokumentacja protokołu UCI</h2>
                 <p>
-                Szczegółowy opis protokołu UCI można znaleźć pod tym linkiem:
+                Szczegółowy opis protokołu UCI można znaleźć na stronie:
                 <a href="https://gist.github.com/DOBRO/2592c6dad754ba67e6dcaec8c90165bf" target="_blank">
                     Protokół UCI
                 </a>

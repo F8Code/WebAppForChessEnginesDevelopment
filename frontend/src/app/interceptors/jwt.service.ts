@@ -4,32 +4,47 @@ import { Observable, throwError } from 'rxjs';
 import { AuthService } from '../services/auth/auth.service';
 import { catchError, switchMap } from 'rxjs/operators';
 
-
 @Injectable()
 export class JwtService implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.authService.getToken();
-  
+
+    let modifiedReq = req;
     if (token) {
-      req = req.clone({
+      modifiedReq = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`
         }
       });
     }
-  
-    return next.handle(req).pipe(
+
+    return next.handle(modifiedReq).pipe(
       catchError(error => {
-        this.authService.refreshToken();
-        const newToken = this.authService.getRefreshToken();
-          req = req.clone({
-            setHeaders: {
-              Authorization: `Bearer ${newToken}`
-            }
-          });
-          return next.handle(req);
+        if (error.status === 401) {
+          // Odśwież token
+          return this.authService.refreshToken().pipe(
+            switchMap((response: any) => {
+              const newToken = response.access;
+              this.authService.saveToken(newToken);
+
+              const newReq = req.clone({
+                setHeaders: {
+                  Authorization: `Bearer ${newToken}`
+                }
+              });
+
+              return next.handle(newReq);
+            }),
+            catchError(refreshError => {
+              this.authService.logout();
+              return throwError(refreshError);
+            })
+          );
+        }
+
+        return throwError(error);
       })
     );
   }

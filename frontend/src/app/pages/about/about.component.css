@@ -80,14 +80,15 @@
   }
 
   .info-section h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
+    font-size: 22px;
+    margin-bottom: 5px;
   }
 
   .info-section p, .info-section ul, .info-section pre {
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1.5;
-    margin-bottom: 2px;
+    margin-bottom: 0px;
+    margin-top: 0px;
   }
 
   .info-section code {
