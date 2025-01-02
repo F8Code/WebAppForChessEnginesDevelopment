@@ -7,3 +7,4 @@ adrf
 channels
 channels-redis
 daphne
+django-ratelimit

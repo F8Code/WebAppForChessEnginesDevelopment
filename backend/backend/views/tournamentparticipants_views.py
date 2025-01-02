@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import TournamentParticipant, Tournament, User, ChessEngine
@@ -11,6 +12,7 @@ def list_tournament_participants(request):
     return Response(serializer.data)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_tournament_participant(request, tournament_id, participant_id):
     engine_url = request.data.get('engine_url')
 
@@ -40,6 +42,7 @@ def create_tournament_participant(request, tournament_id, participant_id):
     return Response({"participant_created"}, status=status.HTTP_201_CREATED)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_tournament_participant(request, tournament_id, participant_id):
     try:
         participant = TournamentParticipant.objects.get(tournament_id=tournament_id, player_id=participant_id)
@@ -53,6 +56,7 @@ def update_tournament_participant(request, tournament_id, participant_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_tournament_participant(request, tournament_id, participant_id):
     try:
         participant = TournamentParticipant.objects.get(tournament_id=tournament_id, player_id=participant_id)

@@ -1,9 +1,7 @@
 import json, asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 from redis.asyncio import Redis
-from django.utils import timezone
 from asgiref.sync import sync_to_async
-from django.test import RequestFactory
 
 redis_instance = Redis.from_url("redis://redis:6379")
 

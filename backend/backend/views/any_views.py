@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view
+from django_ratelimit.decorators import ratelimit
 from rest_framework.response import Response
 from django.db.models import Q, F
 from django.core.paginator import Paginator
@@ -86,6 +87,7 @@ def filter_and_sort_queryset(queryset, filters, sort, page, serializer_class, us
 
     return serializer_class(paginated_data, many=True).data
 
+@ratelimit(key='ip', rate='20/m', block=True)
 @api_view(['POST'])
 def get_games(request):
     filters = request.data.get('filters', {})
@@ -113,6 +115,7 @@ def get_games(request):
 
     return Response(serialized_games)
 
+@ratelimit(key='ip', rate='20/m', block=True)
 @api_view(['POST'])
 def get_tournaments(request):
     filters = request.data.get('filters', {})

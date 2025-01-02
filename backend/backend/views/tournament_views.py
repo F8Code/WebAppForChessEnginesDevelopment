@@ -1,14 +1,13 @@
-from ..models import User, Tournament, TournamentParticipant, TournamentGame
-from ..serializers import TournamentSerializer, TournamentDetailsSerializer, TournamentParticipantSerializer, GameSerializer
+from ..models import User, Tournament, TournamentGame
+from ..serializers import TournamentSerializer, TournamentDetailsSerializer, GameSerializer
 
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-
-from django.core.paginator import Paginator
-from django.db.models import F, Q
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_tournament(request):
     if request.method == 'POST':
         data = request.data
@@ -27,7 +26,7 @@ def create_tournament(request):
             return Response({"tournament_id": tournament.tournament_id}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
 @api_view(['GET'])
 def get_tournament(request, tournament_id):
     try:
@@ -39,8 +38,9 @@ def get_tournament(request, tournament_id):
 
     except Tournament.DoesNotExist:
         return Response({'error': 'Tournament not found'}, status=status.HTTP_404_NOT_FOUND)
-    
+
 @api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
 def update_tournament_slots(request, tournament_id):
     try:
         tournament = Tournament.objects.get(tournament_id=tournament_id)
@@ -68,6 +68,7 @@ def get_all_tournament_chat_messages(request, tournament_id):
         return Response({"error": "Tournament not found"}, status=404)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_tournament_message(request, tournament_id):
     message = request.data.get('message', '').strip()
 
@@ -105,6 +106,7 @@ def get_tournament_games(request, tournament_id):
     return Response(serializer.data)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_tournament(request, tournament_id):
     try:
         tournament = Tournament.objects.get(tournament_id=tournament_id)
@@ -119,6 +121,7 @@ def update_tournament(request, tournament_id):
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_tournament(request, tournament_id):
     try:
         tournament = Tournament.objects.get(tournament_id=tournament_id)

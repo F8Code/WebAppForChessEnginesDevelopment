@@ -5,6 +5,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { JwtService } from './interceptors/jwt.service';
+
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { TournamentCreatorComponent } from './pages/home/tournament-creator/tournament-creator.component';
@@ -54,7 +57,13 @@ import { GameTournamentFiltersComponent } from './pages/home/game-tournament-lis
     ReactiveFormsModule,
     NgxSliderModule
   ],
-  providers: [],
+  providers: [
+    {
+        provide: HTTP_INTERCEPTORS,
+        useClass: JwtService,
+        multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

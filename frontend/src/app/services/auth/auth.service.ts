@@ -23,6 +23,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}login/`, userData).pipe(
       tap((response: any) => {
         this.saveToken(response.access);
+        this.saveRefreshToken(response.refresh);
         this.saveUsername(userData.username);
         this.usernameSubject.next(userData.username);
 
@@ -33,8 +34,26 @@ export class AuthService {
     );
   }
 
+  refreshToken(): Observable<any> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+  
+    return this.http.post(`${this.apiUrl}refresh/`, { refresh: refreshToken }).pipe(
+      tap((response: any) => {
+        this.saveToken(response.access);
+        this.saveRefreshToken(response.refresh);
+      })
+    );
+  }  
+
   saveToken(token: string) {
     localStorage.setItem('token', token);
+  }
+
+  saveRefreshToken(refreshToken: string) {
+    localStorage.setItem('refresh_token', refreshToken);
   }
 
   saveUsername(username: string) {
@@ -51,6 +70,10 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refresh_token');
   }
 
   getUsername(): string | null {

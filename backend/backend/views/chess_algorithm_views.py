@@ -4,9 +4,12 @@ from rest_framework import status
 from ..python_chess_algorithms.move_validation_algorithms import validate_move
 
 from adrf.decorators import api_view
+from rest_framework.exceptions import PermissionDenied
 
 @api_view(['POST'])
 async def validate_move_view(request, game_id):
+    if not request.user.is_authenticated:
+        raise PermissionDenied("Authentication required")
     try:
         fen_notation_position = request.data.get('fen_notation_position')
         coordinate_notation_move = request.data.get('coordinate_notation_move')

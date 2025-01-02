@@ -1,13 +1,14 @@
 import urllib.parse
 
 from django.utils import timezone
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import ChessEngine, User
-from ..serializers import ChessEngineSerializer
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_engine(request):
     if request.method == 'POST':
         data = request.data
@@ -30,6 +31,7 @@ def create_engine(request):
         return Response({"engine_id": engine.engine_id}, status=status.HTTP_201_CREATED)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_engine(request, url):
     try:
         decoded_url = urllib.parse.unquote(url)
@@ -48,6 +50,7 @@ def update_engine(request, url):
         return Response({'error': str(e)}, status=500)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_engine(request, url):
     try:
         decoded_url = urllib.parse.unquote(url)

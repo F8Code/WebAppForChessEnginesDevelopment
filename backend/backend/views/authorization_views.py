@@ -11,6 +11,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 @api_view(['POST'])
 def register(request):
     username = request.data.get('username')
@@ -67,3 +71,11 @@ def get_user_id(request, username):
         return Response({'user_id': user.user_id})
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=404)
+    
+@method_decorator(ratelimit(key='ip', rate='5/m', block=True), name='dispatch')
+class RateLimitedTokenObtainPairView(TokenObtainPairView):
+    pass
+
+@method_decorator(ratelimit(key='ip', rate='10/m', block=True), name='dispatch')
+class RateLimitedTokenRefreshView(TokenRefreshView):
+    pass

@@ -3,6 +3,7 @@ from django.db import transaction
 from django.utils import timezone
 from asgiref.sync import sync_to_async
 from django.test.client import RequestFactory
+from django.contrib.auth.models import AnonymousUser
 from channels.layers import get_channel_layer
 import time
 from django.db.models import Q
@@ -117,7 +118,7 @@ class GameManager:
         self.current_player = "white" if self.current_player == "black" else "black"
 
     async def log_server_message(self, message_type=None, result_message=None, username=None):
-        from .views.game_views import add_game_message
+        from .views.internal_views import add_game_message
 
         message = self.get_server_message(message_type, result_message, username)
         if not message:
@@ -129,7 +130,9 @@ class GameManager:
                 f'/api/game/{self.game_id}/chat/last/create/',
                 {'message': message},
                 content_type='application/json',
+                HTTP_X_INTERNAL_REQUEST='true',
             )
+            
 
             response = await sync_to_async(add_game_message)(request, game_id=self.game_id)
             if response.status_code != 200:
@@ -182,7 +185,7 @@ class GameManager:
 
     async def update_game_status(self, end_type, fen_position=None, username=None):
         from .models import Game, TournamentGame
-        from .views.game_views import update_game
+        from .views.internal_views import update_game
 
         try:
             game = await sync_to_async(Game.objects.get)(game_id=self.game_id)
@@ -213,8 +216,9 @@ class GameManager:
                     'result': result_message,
                     'end_time': timezone.now(),
                 },
-                content_type='application/json'
+                content_type='application/json',
             )
+            request.user = AnonymousUser()
 
             response = await sync_to_async(update_game)(request, game_id=self.game_id)
             if response.status_code != 200:
@@ -408,8 +412,8 @@ class TournamentManager:
         return result
 
     def _handle_player_ready_transaction(self, user_id):
-        from backend.views.game_views import create_game, join_game
-        from backend.views.move_views import create_move
+        from backend.views.internal_views import create_move, create_game, join_game
+        
         request_factory = RequestFactory()
         
         with transaction.atomic():
@@ -452,7 +456,12 @@ class TournamentManager:
             if not game_data["engine_url"]:
                 del game_data["engine_url"]
 
-            request_mock_create = request_factory.post('/api/game/create/', data=game_data)
+            request_mock_create = request_factory.post(
+                '/api/game/create/', 
+                data=game_data, 
+                content_type='application/json',
+            )
+            request_mock_create.user = AnonymousUser()
             response_create = create_game(request_mock_create)
             if response_create.status_code != 201:
                 raise Exception(f"Nie udało się utworzyć gry: {response_create.data}")
@@ -470,7 +479,12 @@ class TournamentManager:
             if not join_data["engine_url"]:
                 del join_data["engine_url"]
 
-            request_mock_join = request_factory.post(f'/api/game/{game_id}/join/', data=join_data)
+            request_mock_join = request_factory.post(
+                f'/api/game/{game_id}/join/', 
+                data=join_data, 
+                content_type='application/json',
+            )
+            request_mock_join.user = AnonymousUser()
             response_join = join_game(request_mock_join, game_id=game_id)
             if response_join.status_code != 200:
                 raise Exception(f"Nie udało się dołączyć gracza do gry: {response_join.data}")
@@ -481,7 +495,13 @@ class TournamentManager:
             "san_move": "",
             "fen_position": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
             }
-            request_mock_move = request_factory.post(f'/api/game/{game_id}/move/0/create/', data=initial_move_data)
+
+            request_mock_move = request_factory.post(
+                f'/api/game/{game_id}/move/0/create/', 
+                data=initial_move_data, 
+                content_type='application/json',
+            )
+            request_mock_move.user = AnonymousUser()
             response_move = create_move(request_mock_move, game_id=game_id, move_number=0)
             if response_move.status_code != 201:
                 raise Exception(f"Nie udało się zapisać ruchu początkowego: {response_move.data}")
@@ -739,7 +759,7 @@ class TournamentManager:
             await sync_to_async(self.tournament.save)()
 
     async def log_server_message(self, message_type, username=None):
-        from .views.tournament_views import add_tournament_message
+        from .views.internal_views import add_tournament_message
         server_messages = {
             'player_joined': f'Serwer|Gracz {username} dołączył do turnieju.',
             'player_left': f'Serwer|Gracz {username} opuścił turniej.',
@@ -762,6 +782,7 @@ class TournamentManager:
                 {'message': message},
                 content_type='application/json',
             )
+            request.user = AnonymousUser()
 
             response = await sync_to_async(add_tournament_message)(request, tournament_id=self.tournament_id)
             if response.status_code != 200:

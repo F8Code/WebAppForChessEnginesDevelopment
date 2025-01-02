@@ -1,10 +1,12 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from ..models import User, Game, Tournament, ChessEngine
 from ..serializers import UserSerializer, GameSerializer, TournamentDetailsSerializer, ChessEngineSerializer
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_user_profile(request, user_id):
     try:
         user = User.objects.get(user_id=user_id)
@@ -15,6 +17,7 @@ def get_user_profile(request, user_id):
     return Response(serializer.data, status=200)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_user_profile(request, user_id):
     try:
         user = User.objects.get(user_id=user_id)
@@ -37,6 +40,7 @@ class StandardResultsSetPagination(PageNumberPagination):
     max_page_size = 100
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_user_games(request, user_id):
     try:
         user = User.objects.get(user_id=user_id)
@@ -50,6 +54,7 @@ def get_user_games(request, user_id):
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_user_tournaments(request, user_id):
     try:
         user = User.objects.get(user_id=user_id)
@@ -63,6 +68,7 @@ def get_user_tournaments(request, user_id):
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_user_engines(request, user_id):
     try:
         user = User.objects.get(user_id=user_id)
